@@ -2,459 +2,796 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Mapa Elementów Emaila - Infografika dla Projektantów</title>
+  <title>Email Mapper - Mapa Elementów Emaila</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    * {
+      box-sizing: border-box;
+    }
+    
     body {
-      background-color: #eef2f5;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
       padding: 20px;
-      color: #333;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
     }
 
-    /* Style znaczników */
-    .marker {
-      font-family: 'Consolas', monospace;
-      font-size: 10px;
-      padding: 3px 6px;
-      border-radius: 3px;
-      display: inline-block;
-      margin: 1px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-      font-weight: bold;
-      border: 1px solid rgba(0,0,0,0.1);
-      position: relative;
-      z-index: 10;
-      line-height: 1.3;
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
     }
 
-    /* Kolor 1 - Fioletowy */
-    .marker-c1 {
-      background-color: #6a1b9a;
-      color: #fff;
-      border: 2px solid #fff;
-    }
-    .marker-c1::before { content: "🎨 GRADIENT 1: "; opacity: 0.8; font-weight: normal; }
-
-    /* Kolor 2 - Turkusowy */
-    .marker-c2 {
-      background-color: #00bcd4;
-      color: #fff;
-      border: 2px solid #fff;
-    }
-    .marker-c2::before { content: "🎨 GRADIENT 2: "; opacity: 0.8; font-weight: normal; }
-
-    /* Linki */
-    .marker-link {
-      background-color: #fff;
-      color: #d32f2f;
-      border: 1px dashed #d32f2f;
-    }
-    .marker-link::before { content: "🔗 "; font-weight: bold; }
-
-    /* Obrazki */
-    .marker-img {
-      background-color: #fff;
-      color: #2e7d32;
-      border: 1px dashed #2e7d32;
-    }
-    .marker-img::before { content: "🖼️ "; font-weight: bold; }
-
-    /* Tekst */
-    .marker-text {
-      background-color: #fff3cd;
-      color: #856404;
-      border: 1px dashed #ffc107;
-    }
-    .marker-text::before { content: "📝 "; font-weight: bold; }
-
-    /* Wygaszenie treści tekstowej */
-    .content-blur {
-      opacity: 0.35;
-      filter: blur(0.5px);
-      pointer-events: none;
-    }
-    
-    .section-label {
-      font-size: 9px;
-      color: #999;
-      margin: 0 0 3px 0;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    header {
+      background: white;
+      padding: 24px 32px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
-    .wrapper { padding: 32px; }
-    .main-table { width: 600px; margin: auto; max-width: 600px; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-    
-    /* Legenda */
-    .legend-bar {
-        position: sticky;
-        top: 0;
-        background: rgba(255,255,255,0.98);
-        padding: 12px;
-        border-bottom: 2px solid #ddd;
-        margin-bottom: 20px;
-        z-index: 100;
-        display: flex;
-        gap: 12px;
-        justify-content: center;
-        flex-wrap: wrap;
-        -webkit-backdrop-filter: blur(5px);
-        backdrop-filter: blur(5px);
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    header h1 {
+      margin: 0 0 8px 0;
+      color: #6a1b9a;
+      font-size: 32px;
+    }
+
+    header p {
+      margin: 0;
+      color: #666;
+      font-size: 16px;
+    }
+
+    .legend {
+      background: rgba(255,255,255,0.95);
+      padding: 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 8px;
+      font-size: 14px;
     }
 
-    .code-block {
-      background: #f5f5f5;
-      border-left: 3px solid #6a1b9a;
-      padding: 8px 12px;
-      margin: 8px 0;
-      font-family: 'Consolas', monospace;
-      font-size: 11px;
-      border-radius: 3px;
-    }
-
-    .section-info {
-      background: #f8f9fa;
-      border: 1px solid #dee2e6;
-      padding: 8px;
-      margin: 5px 0;
+    .legend-color {
+      width: 24px;
+      height: 24px;
       border-radius: 4px;
-      font-size: 10px;
+      border: 2px solid white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .email-preview {
+      position: sticky;
+      top: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+      overflow: hidden;
+    }
+
+    .email-preview-header {
+      background: #f8f9fa;
+      padding: 12px 20px;
+      border-bottom: 2px solid #e0e0e0;
+      font-size: 13px;
+      color: #666;
+      font-weight: 600;
+    }
+
+    .email-content {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .mapping-sections {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .mapping-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      border: 3px solid transparent;
+    }
+
+    .mapping-card.active {
+      border-color: #6a1b9a;
+      box-shadow: 0 8px 24px rgba(106,27,154,0.3);
+      transform: translateX(-5px);
+    }
+
+    .mapping-card h3 {
+      margin: 0 0 4px 0;
+      color: #6a1b9a;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 700;
+    }
+
+    .mapping-card h2 {
+      margin: 0 0 16px 0;
+      color: #333;
+      font-size: 20px;
+    }
+
+    .variable-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .variable-item {
+      background: #f8f9fa;
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 4px solid #6a1b9a;
+    }
+
+    .variable-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .variable-code {
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 13px;
+      color: #d32f2f;
+      background: white;
+      padding: 6px 8px;
+      border-radius: 4px;
+      display: inline-block;
+      word-break: break-all;
+    }
+
+    .color-indicator {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 8px;
+    }
+
+    /* Email sections */
+    .email-section {
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .email-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(106,27,154,0.1);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .email-section:hover::before,
+    .email-section.active::before {
+      opacity: 1;
+    }
+
+    .email-section.active {
+      outline: 3px solid #6a1b9a;
+      outline-offset: -3px;
+    }
+
+    .section-number {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #6a1b9a;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      z-index: 2;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+
+    /* Email styles */
+    .email-banner {
+      position: relative;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .email-body {
+      padding: 24px;
+    }
+
+    .email-greeting {
+      font-size: 22px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 16px;
+    }
+
+    .email-text {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .email-info {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+      color: #555;
+    }
+
+    .email-info-icon {
+      font-size: 18px;
+    }
+
+    .email-button {
+      display: inline-block;
+      background: #6a1b9a;
+      color: white;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 700;
+      margin-top: 16px;
+      transition: background 0.3s;
+    }
+
+    .email-button:hover {
+      background: #7b1fa2;
+    }
+
+    .order-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #D0D9DF;
+      margin-bottom: 16px;
+    }
+
+    .order-table th {
+      background: white;
+      color: #6a1b9a;
+      padding: 12px;
+      text-align: left;
+      font-size: 16px;
+      border-bottom: 2px solid #D0D9DF;
+    }
+
+    .order-table td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .order-table .ticket-name {
+      color: #6a1b9a;
+      font-weight: 700;
+    }
+
+    .order-summary-row {
+      background: #F8F9FA;
+    }
+
+    .order-total-row {
+      background: #00bcd4;
+      color: white;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .order-total-row td {
+      border-bottom: none;
+    }
+
+    .billing-table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #D0D9DF;
+      margin-bottom: 16px;
+    }
+
+    .billing-table th {
+      background: white;
+      color: #6a1b9a;
+      padding: 12px;
+      text-align: left;
+      font-size: 16px;
+      border-bottom: 2px solid #D0D9DF;
+    }
+
+    .billing-table td {
+      padding: 12px;
+      vertical-align: top;
+      width: 50%;
+      border-right: 1px solid #D0D9DF;
+    }
+
+    .billing-table td:last-child {
+      border-right: none;
+    }
+
+    .email-footer {
+      background: #6a1b9a;
+      color: white;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .email-footer a {
+      color: white;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 1200px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .email-preview {
+        position: relative;
+        top: 0;
+      }
+    }
+
+    .code-snippet {
+      background: #2d2d2d;
+      color: #f8f8f2;
+      padding: 16px;
+      border-radius: 6px;
+      margin-top: 12px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    .code-snippet .keyword {
+      color: #66d9ef;
+    }
+
+    .code-snippet .string {
+      color: #a6e22e;
+    }
+
+    .code-snippet .variable {
+      color: #fd971f;
+    }
   </style>
 </head>
 <body>
+  <div class="container">
+    <header>
+      <h1>📧 Email Mapper</h1>
+      <p>Mapa elementów emaila potwierdzającego rejestrację na wydarzenie. Najedź na sekcję, aby zobaczyć szczegóły mapowania.</p>
+    </header>
 
-  <div style="max-width: 800px; margin: 0 auto 30px auto; background: white; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-    <h1 style="margin: 0 0 12px 0; color: #6a1b9a; font-size: 28px;">📧 Mapa Elementów Emaila</h1>
-    <p style="margin: 0 0 16px 0; color: #666; line-height: 1.6;">
-      Infografika dla projektantów kolejnych wydarzeń. Poniższa mapa pokazuje dokładne umiejscowienie każdego elementu w mailu potwierdzającym rejestrację oraz odpowiadające mu zmienne z systemu.
-    </p>
-    <div style="background: #f8f9fa; padding: 12px; border-radius: 4px; border-left: 4px solid #6a1b9a;">
-      <strong style="color: #6a1b9a;">Jak korzystać z tej mapy:</strong>
-      <ul style="margin: 8px 0 0 0; padding-left: 20px; color: #555;">
-        <li>Każdy element oznaczony jest kolorowym znacznikiem z nazwą zmiennej</li>
-        <li>Szare, rozmyte teksty to przykładowa treść (nie zmienne)</li>
-        <li>W każdej sekcji znajdziesz blok z dokładnym mapowaniem zmiennych</li>
-        <li>Schematy HTML pokazują strukturę kodu dla każdej sekcji</li>
-      </ul>
+    <div class="legend">
+      <div class="legend-item">
+        <div class="legend-color" style="background: #6a1b9a;"></div>
+        <span><strong>{{30.data.color_gradient_1}}</strong> - Kolor główny (fiolet)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background: #00bcd4;"></div>
+        <span><strong>{{30.data.color_gradient_2}}</strong> - Kolor akcentu (turkus)</span>
+      </div>
+      <div class="legend-item">
+        <span>🖼️ <strong>Obrazki</strong> - Grafiki (src)</span>
+      </div>
+      <div class="legend-item">
+        <span>🔗 <strong>Linki</strong> - Odnośniki (href)</span>
+      </div>
+    </div>
+
+    <div class="main-layout">
+      <!-- LEWY PANEL - PODGLĄD EMAILA -->
+      <div class="email-preview">
+        <div class="email-preview-header">
+          📧 Podgląd emaila
+        </div>
+        <div class="email-content">
+          
+          <!-- SEKCJA 1: BANNER -->
+          <div class="email-section" data-section="1">
+            <div class="section-number">1</div>
+            <div class="email-banner">
+              <span>BANNER WYDARZENIA</span>
+            </div>
+          </div>
+
+          <!-- SEKCJA 2: TREŚĆ GŁÓWNA -->
+          <div class="email-section" data-section="2">
+            <div class="section-number">2</div>
+            <div class="email-body">
+              <div class="email-greeting">
+                Cześć <strong>Magdalena</strong>
+              </div>
+              <div class="email-text">
+                Dziękujemy za rejestrację na <strong>AMOZ Connect Warszawa</strong>. Aby potwierdzić rezerwację miejsca, wymagane jest dokonanie płatności.
+              </div>
+              <div class="email-info">
+                <div class="email-info-icon">📅</div>
+                <div>5 lutego 2026, 10:00</div>
+              </div>
+              <div class="email-info">
+                <div class="email-info-icon">📍</div>
+                <div>
+                  <strong>Regent Warsaw Hotel</strong><br>
+                  ul. Belwederska 23, 00-761 Warszawa
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SEKCJA 3: PRZYCISK CTA -->
+          <div class="email-section" data-section="3">
+            <div class="section-number">3</div>
+            <div class="email-body" style="padding-top: 0;">
+              <a href="#" class="email-button">Opłać rezerwację</a>
+            </div>
+          </div>
+
+          <!-- SEKCJA 4: SZCZEGÓŁY ZAMÓWIENIA -->
+          <div class="email-section" data-section="4">
+            <div class="section-number">4</div>
+            <div class="email-body">
+              <table class="order-table">
+                <thead>
+                  <tr>
+                    <th colspan="3">Szczegóły zamówienia</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="ticket-name">Bilet Connect</td>
+                    <td style="text-align: center;">1 szt. × 567,00 zł</td>
+                    <td style="text-align: right;">567,00 zł</td>
+                  </tr>
+                  <tr>
+                    <td class="ticket-name">Bilet Connect +</td>
+                    <td style="text-align: center;">3 szt. × 399,00 zł</td>
+                    <td style="text-align: right;">1.197,00 zł</td>
+                  </tr>
+                  <tr class="order-summary-row">
+                    <td colspan="2">Kwota netto</td>
+                    <td style="text-align: right;">1.764,00 zł</td>
+                  </tr>
+                  <tr class="order-summary-row">
+                    <td colspan="2">VAT (23%)</td>
+                    <td style="text-align: right;">405,72 zł</td>
+                  </tr>
+                  <tr class="order-total-row">
+                    <td colspan="2">Razem do zapłaty</td>
+                    <td style="text-align: right;">2.169,72 zł</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SEKCJA 5: DANE ROZLICZENIOWE -->
+          <div class="email-section" data-section="5">
+            <div class="section-number">5</div>
+            <div class="email-body" style="padding-top: 0;">
+              <table class="billing-table">
+                <thead>
+                  <tr>
+                    <th colspan="2">Dane rozliczeniowe</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>
+                      <strong>Magdalena Kapusta</strong><br>
+                      tescionweb2@digitalunity.pl<br>
+                      +48888469553
+                    </td>
+                    <td>
+                      <strong>Katarzyna Ochnik DIGITAL UNITY</strong><br>
+                      Bluszczańska 74/58, 00712 Warszawa<br>
+                      NIP: 9710668048
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- SEKCJA 6: STOPKA -->
+          <div class="email-section" data-section="6">
+            <div class="section-number">6</div>
+            <div class="email-footer">
+              Masz pytania? Skontaktuj się z nami:<br>
+              <a href="mailto:eventy@medidesk.com">eventy@medidesk.com</a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- PRAWY PANEL - MAPOWANIE -->
+      <div class="mapping-sections">
+        
+        <!-- MAPPING 1: BANNER -->
+        <div class="mapping-card" data-mapping="1">
+          <h3>Sekcja 1</h3>
+          <h2>Banner górny</h2>
+          <div class="variable-list">
+            <div class="variable-item">
+              <div class="variable-label">🖼️ Obrazek bannera:</div>
+              <div class="variable-code">{{30.data.event_mail_link_top_banner}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">🔗 Link do wydarzenia:</div>
+              <div class="variable-code">{{30.data.url_event}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">📝 Alt text obrazka:</div>
+              <div class="variable-code">{{16.event_name}}</div>
+            </div>
+          </div>
+          <div class="code-snippet">
+<span class="keyword">&lt;a</span> <span class="string">href</span>=<span class="variable">"{{30.data.url_event}}"</span><span class="keyword">&gt;</span>
+  <span class="keyword">&lt;img</span> <span class="string">src</span>=<span class="variable">"{{30.data.event_mail_link_top_banner}}"</span>
+       <span class="string">alt</span>=<span class="variable">"{{16.event_name}}"</span> <span class="keyword">/&gt;</span>
+<span class="keyword">&lt;/a&gt;</span>
+          </div>
+        </div>
+
+        <!-- MAPPING 2: TREŚĆ GŁÓWNA -->
+        <div class="mapping-card" data-mapping="2">
+          <h3>Sekcja 2</h3>
+          <h2>Treść główna</h2>
+          <div class="variable-list">
+            <div class="variable-item">
+              <div class="variable-label">👤 Imię uczestnika:</div>
+              <div class="variable-code">{{9.customFormData[].formEntries.purchaser_first_name}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">📋 Nazwa wydarzenia:</div>
+              <div class="variable-code">{{16.event_name}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">📅 Data wydarzenia:</div>
+              <div class="variable-code">{{30.data.event_day_text_1}}, {{30.data.event_time_text}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">📍 Miejsce (nazwa):</div>
+              <div class="variable-code">{{30.data.event_location_place}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">📍 Adres:</div>
+              <div class="variable-code">{{30.data.event_location_address}}, {{30.data.event_location_zip}} {{30.data.event_location_city}}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAPPING 3: PRZYCISK CTA -->
+        <div class="mapping-card" data-mapping="3">
+          <h3>Sekcja 3</h3>
+          <h2>Przycisk płatności (CTA)</h2>
+          <div class="variable-list">
+            <div class="variable-item">
+              <div class="variable-label">🎨 Kolor tła przycisku:</div>
+              <div class="variable-code">{{30.data.color_gradient_1}}</div>
+              <span class="color-indicator" style="background: #6a1b9a; color: white;">Gradient 1</span>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">🔗 Link do płatności:</div>
+              <div class="variable-code">{{2.body.url}}</div>
+            </div>
+          </div>
+          <div class="code-snippet">
+<span class="keyword">&lt;a</span> <span class="string">href</span>=<span class="variable">"{{2.body.url}}"</span>
+   <span class="string">style</span>=<span class="variable">"background-color: {{30.data.color_gradient_1}};"</span><span class="keyword">&gt;</span>
+  Opłać rezerwację
+<span class="keyword">&lt;/a&gt;</span>
+          </div>
+        </div>
+
+        <!-- MAPPING 4: SZCZEGÓŁY ZAMÓWIENIA -->
+        <div class="mapping-card" data-mapping="4">
+          <h3>Sekcja 4</h3>
+          <h2>Szczegóły zamówienia</h2>
+          <div class="variable-list">
+            <div class="variable-item">
+              <div class="variable-label">🎨 Kolor nagłówka "Szczegóły zamówienia":</div>
+              <div class="variable-code">{{30.data.color_gradient_1}}</div>
+              <span class="color-indicator" style="background: #6a1b9a; color: white;">Gradient 1</span>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">🎫 Nazwa biletu (w pętli):</div>
+              <div class="variable-code">{{43.data.ticketName}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">🔢 Ilość:</div>
+              <div class="variable-code">{{42.quantity}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">💰 Cena jednostkowa:</div>
+              <div class="variable-code">{{formatNumber(42.pricePerUnit; 2; ","; )}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">💰 Wartość netto pozycji:</div>
+              <div class="variable-code">{{formatNumber(42.totalNetAmount; 2; ","; )}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">💰 Suma netto:</div>
+              <div class="variable-code">{{formatNumber(16.purchase_net_value; 2; ","; )}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">💰 VAT:</div>
+              <div class="variable-code">{{formatNumber(16.purchase_gross_value - 16.purchase_net_value; 2; ","; )}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">💰 Razem do zapłaty:</div>
+              <div class="variable-code">{{formatNumber(16.purchase_gross_value; 2; ","; )}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">🎨 Kolor tła "Razem do zapłaty":</div>
+              <div class="variable-code">{{30.data.color_gradient_2}}</div>
+              <span class="color-indicator" style="background: #00bcd4; color: white;">Gradient 2</span>
+            </div>
+          </div>
+          <div class="code-snippet">
+<span class="keyword">&lt;tr&gt;</span> <span style="color: #75715e;">/* Pętla biletów - {{45.text}} */</span>
+  <span class="keyword">&lt;td</span> <span class="string">style</span>=<span class="variable">"color: {{30.data.color_gradient_1}};"</span><span class="keyword">&gt;</span>
+    <span class="variable">{{43.data.ticketName}}</span>
+  <span class="keyword">&lt;/td&gt;</span>
+  <span class="keyword">&lt;td&gt;</span><span class="variable">{{42.quantity}}</span> szt. × <span class="variable">{{formatNumber(42.pricePerUnit; 2; ","; )}}</span> zł<span class="keyword">&lt;/td&gt;</span>
+  <span class="keyword">&lt;td&gt;</span><span class="variable">{{formatNumber(42.totalNetAmount; 2; ","; )}}</span> zł<span class="keyword">&lt;/td&gt;</span>
+<span class="keyword">&lt;/tr&gt;</span>
+          </div>
+        </div>
+
+        <!-- MAPPING 5: DANE ROZLICZENIOWE -->
+        <div class="mapping-card" data-mapping="5">
+          <h3>Sekcja 5</h3>
+          <h2>Dane rozliczeniowe</h2>
+          <div class="variable-list">
+            <div class="variable-item">
+              <div class="variable-label">🎨 Kolor nagłówka:</div>
+              <div class="variable-code">{{30.data.color_gradient_1}}</div>
+              <span class="color-indicator" style="background: #6a1b9a; color: white;">Gradient 1</span>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">👤 Imię i nazwisko:</div>
+              <div class="variable-code">{{16.purchaser_full}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">📧 Email:</div>
+              <div class="variable-code">{{16.purchaser_email}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">📱 Telefon:</div>
+              <div class="variable-code">{{9.customFormData[].formEntries.purchaser_mobile_no}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">🏢 Nazwa firmy:</div>
+              <div class="variable-code">{{16.billing_company_name}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">📍 Adres rozliczeniowy:</div>
+              <div class="variable-code">{{33.billing_address_full_new_line}}</div>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">🏛️ NIP:</div>
+              <div class="variable-code">{{16.purchaser_nip}}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAPPING 6: STOPKA -->
+        <div class="mapping-card" data-mapping="6">
+          <h3>Sekcja 6</h3>
+          <h2>Stopka</h2>
+          <div class="variable-list">
+            <div class="variable-item">
+              <div class="variable-label">🎨 Kolor tła stopki:</div>
+              <div class="variable-code">{{30.data.color_gradient_1}}</div>
+              <span class="color-indicator" style="background: #6a1b9a; color: white;">Gradient 1</span>
+            </div>
+            <div class="variable-item">
+              <div class="variable-label">📧 Email kontaktowy:</div>
+              <div class="variable-code">{{30.data.md_email_kontakt}}</div>
+            </div>
+          </div>
+          <div class="code-snippet">
+<span class="keyword">&lt;div</span> <span class="string">style</span>=<span class="variable">"background: {{30.data.color_gradient_1}};"</span><span class="keyword">&gt;</span>
+  Masz pytania? Skontaktuj się z nami:
+  <span class="keyword">&lt;a</span> <span class="string">href</span>=<span class="variable">"mailto:{{30.data.md_email_kontakt}}"</span><span class="keyword">&gt;</span>
+    <span class="variable">{{30.data.md_email_kontakt}}</span>
+  <span class="keyword">&lt;/a&gt;</span>
+<span class="keyword">&lt;/div&gt;</span>
+          </div>
+        </div>
+
+      </div>
     </div>
   </div>
 
-  <div class="legend-bar">
-      <div class="legend-item">
-        <span class="marker marker-c1" style="background: #6a1b9a; border: none;">{{30.data.color_gradient_1}}</span>
-        <span style="font-size: 11px;">Kolor główny</span>
-      </div>
-      <div class="legend-item">
-        <span class="marker marker-c2" style="background: #00bcd4; border: none;">{{30.data.color_gradient_2}}</span>
-        <span style="font-size: 11px;">Kolor akcentu</span>
-      </div>
-      <div class="legend-item">
-        <span class="marker marker-img">Grafiki</span>
-        <span style="font-size: 11px;">Obrazki (SRC)</span>
-      </div>
-      <div class="legend-item">
-        <span class="marker marker-link">Linki</span>
-        <span style="font-size: 11px;">Odnośniki (HREF)</span>
-      </div>
-      <div class="legend-item">
-        <span class="marker marker-text">Tekst</span>
-        <span style="font-size: 11px;">Zmienne tekstowe</span>
-      </div>
-  </div>
+  <script>
+    // Interaktywność - podświetlanie sekcji
+    const emailSections = document.querySelectorAll('.email-section');
+    const mappingCards = document.querySelectorAll('.mapping-card');
 
-  <!-- Prawdziwa struktura maila -->
-  <table border="0" cellpadding="0" cellspacing="0" width="100%">
-    <tr>
-      <td class="wrapper">
-        <table border="0" cellpadding="0" cellspacing="0" class="main-table">
-          <tr>
-            <td>
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-family: Arial; border-collapse: collapse;">
-                
-                <!-- BANNER GÓRNY -->
-                <tr>
-                  <td valign="top" style="padding: 0; position: relative; border: 2px dashed #2e7d32;">
-                    <div class="section-label">SEKCJA 1: BANNER GÓRNY</div>
-                    <!-- Oznaczenia -->
-                    <div style="position: absolute; top: 10px; left: 10px; right: 10px; text-align: center; z-index: 5;">
-                        <span class="marker marker-link">{{30.data.url_event}}</span><br>
-                        <span class="marker marker-img">{{30.data.event_mail_link_top_banner}}</span>
-                    </div>
-                    
-                    <div class="section-info">
-                      <strong>Mapowanie:</strong><br>
-                      • Link: <code>&lt;a href="{{30.data.url_event}}"&gt;</code><br>
-                      • Obrazek: <code>&lt;img src="{{30.data.event_mail_link_top_banner}}" alt="{{16.event_name}}"&gt;</code>
-                    </div>
-                    
-                    <!-- Symulacja Obrazka -->
-                    <div style="height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; position: relative;">
-                        <span style="color: rgba(255,255,255,0.8); font-weight: bold;">BANNER WYDARZENIA</span>
-                    </div>
-                  </td>
-                </tr>
+    // Hover na sekcji emaila
+    emailSections.forEach(section => {
+      section.addEventListener('mouseenter', () => {
+        const sectionNum = section.dataset.section;
+        highlightSection(sectionNum);
+      });
 
-                <!-- TREŚĆ GŁÓWNA -->
-                <tr>
-                  <td valign="top" style="padding: 12px 24px 24px 24px;">
-                    <div class="section-label">SEKCJA 2: TREŚĆ GŁÓWNA</div>
-                    
-                    <div class="content-blur">
-                        <h2 style="font-size: 22px; margin: 0;">
-                          Cześć <strong><span class="marker marker-text">{{9.customFormData[].formEntries.purchaser_first_name}}</span></strong>
-                        </h2>
-                        <br>
-                        <p>Dziękujemy za rejestrację na <strong><span class="marker marker-text">{{16.event_name}}</span></strong>. Aby potwierdzić rezerwację miejsca, wymagane jest dokonanie płatności.</p>
-                        <br>
-                        <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%">
-                          <tr>
-                            <td style="width: 20px; vertical-align: middle;">
-                              <span class="marker marker-img">📅</span>
-                            </td>
-                            <td style="padding-left: 5px; vertical-align: middle;">
-                              <p><span class="marker marker-text">{{30.data.event_day_text_1}}, {{30.data.event_time_text}}</span></p>
-                            </td>
-                          </tr>
-                        </table>
-                        <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%">
-                          <tr>
-                            <td style="width: 20px; vertical-align: top;">
-                              <span class="marker marker-img">📍</span>
-                            </td>
-                            <td style="padding-left: 5px; vertical-align: top;">
-                              <p style="font-weight: bold;"><span class="marker marker-text">{{30.data.event_location_place}}</span></p>
-                              <p><span class="marker marker-text">{{30.data.event_location_address}}, {{30.data.event_location_zip}} {{30.data.event_location_city}}</span></p>
-                            </td>
-                          </tr>
-                        </table>
-                    </div>
-                    
-                    <div class="section-info">
-                      <strong>Mapowanie zmiennych:</strong><br>
-                      • Imię: <code>{{9.customFormData[].formEntries.purchaser_first_name}}</code><br>
-                      • Nazwa wydarzenia: <code>{{16.event_name}}</code><br>
-                      • Data: <code>{{30.data.event_day_text_1}}, {{30.data.event_time_text}}</code><br>
-                      • Lokalizacja: <code>{{30.data.event_location_place}}</code><br>
-                      • Adres: <code>{{30.data.event_location_address}}, {{30.data.event_location_zip}} {{30.data.event_location_city}}</code>
-                    </div>
-                    
-                    <div style="height: 24px;"></div>
-                    
-                    <!-- PRZYCISK PŁATNOŚCI -->
-                    <div style="position: relative; padding: 10px; border: 1px dotted #ccc; background: #fafafa;">
-                        <div class="section-label">SEKCJA 3: PRZYCISK PŁATNOŚCI (CTA)</div>
-                        
-                        <!-- Wskaźnik koloru tła -->
-                        <div style="margin-bottom: 5px;">
-                            <span class="marker marker-c1">Tło przycisku: {{30.data.color_gradient_1}}</span>
-                        </div>
-                        
-                        <table border="0" cellpadding="0" cellspacing="0">
-                            <tr>
-                              <td style="border-radius: 8px; background-color: #6a1b9a; padding: 12px 16px;">
-                                <a href="#" style="color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px;">Opłać rezerwację</a>
-                              </td>
-                            </tr>
-                        </table>
-                        
-                        <!-- Wskaźnik linku -->
-                        <div style="margin-top: 5px;">
-                            <span class="marker marker-link">Link płatności: {{2.body.url}}</span>
-                        </div>
-                        
-                        <div class="section-info" style="margin-top: 8px;">
-                          <strong>Mapowanie:</strong><br>
-                          • Kolor tła: <code>background-color: {{30.data.color_gradient_1}}</code><br>
-                          • Link: <code>&lt;a href="{{2.body.url}}"&gt;Opłać rezerwację&lt;/a&gt;</code>
-                        </div>
-                    </div>
-                  </td>
-                </tr>
+      section.addEventListener('mouseleave', () => {
+        clearHighlights();
+      });
+    });
 
-                <!-- SZCZEGÓŁY ZAMÓWIENIA -->
-                <tr>
-                  <td style="padding: 0 24px 8px 24px;">
-                    <div class="section-label">SEKCJA 4: SZCZEGÓŁY ZAMÓWIENIA</div>
-                    
-                    <!-- Nagłówek Tabeli -->
-                    <div style="border-bottom: 1px solid #eee; padding: 8px 0; margin-bottom: 10px;">
-                         <span class="marker marker-c1">Kolor nagłówka: {{30.data.color_gradient_1}}</span>
-                         <h3 style="color: #6a1b9a; margin: 5px 0;">Szczegóły zamówienia</h3>
-                    </div>
+    // Hover na karcie mapowania
+    mappingCards.forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        const mappingNum = card.dataset.mapping;
+        highlightSection(mappingNum);
+      });
 
-                    <div class="code-block">
-                      <strong>SCHEMAT PĘTLI BILETÓW ({{45.text}}):</strong><br>
-                      &lt;tr&gt;<br>
-                      &nbsp;&nbsp;&lt;td style="color: {{30.data.color_gradient_1}};"&gt;{{43.data.ticketName}}&lt;/td&gt;<br>
-                      &nbsp;&nbsp;&lt;td&gt;{{42.quantity}} szt. × {{formatNumber(42.pricePerUnit; 2; ","; )}} zł&lt;/td&gt;<br>
-                      &nbsp;&nbsp;&lt;td&gt;{{formatNumber(42.totalNetAmount; 2; ","; )}} zł&lt;/td&gt;<br>
-                      &lt;/tr&gt;
-                    </div>
+      card.addEventListener('mouseleave', () => {
+        clearHighlights();
+      });
+    });
 
-                    <table cellpadding="0" cellspacing="0" width="100%" style="border: 1px solid #D0D9DF;">
-                        <!-- PĘTLA BILETÓW -->
-                        <tr style="background-color: #fff;">
-                          <td style="padding: 10px;">
-                             <span class="marker marker-c1" style="font-size: 9px;">Kolor: {{30.data.color_gradient_1}}</span><br>
-                             <strong style="color: #6a1b9a;">
-                               <span class="marker marker-text">{{43.data.ticketName}}</span>
-                             </strong>
-                          </td>
-                          <td class="content-blur" style="text-align: center; padding: 10px;">
-                            <span class="marker marker-text">{{42.quantity}}</span> szt. × 
-                            <span class="marker marker-text">{{formatNumber(42.pricePerUnit; 2; ","; )}}</span> zł
-                          </td>
-                          <td class="content-blur" style="text-align: right; font-weight: bold; padding: 10px;">
-                            <span class="marker marker-text">{{formatNumber(42.totalNetAmount; 2; ","; )}}</span> zł
-                          </td>
-                        </tr>
-             
-                        <!-- PODSUMOWANIE -->
-                        <!-- Netto -->
-                        <tr>
-                          <td colspan="3" style="background-color: #F8F9FA; padding: 10px; position: relative;">
-                            <!-- Wskaźnik Border -->
-                             <div style="border-top: 2px solid #00bcd4; width: 100%; position: absolute; top:0; left:0;"></div>
-                             <span class="marker marker-c2" style="position: relative; top: -12px; font-size: 9px;">Border-top: {{30.data.color_gradient_2}}</span>
-                             <div class="content-blur" style="display: flex; justify-content: space-between; margin-top: 8px;">
-                                 <span>Kwota netto</span>
-                                 <span><span class="marker marker-text">{{formatNumber(16.purchase_net_value; 2; ","; )}}</span> zł</span>
-                             </div>
-                          </td>
-                        </tr>
+    function highlightSection(num) {
+      clearHighlights();
+      const emailSection = document.querySelector(`.email-section[data-section="${num}"]`);
+      const mappingCard = document.querySelector(`.mapping-card[data-mapping="${num}"]`);
+      
+      if (emailSection) emailSection.classList.add('active');
+      if (mappingCard) mappingCard.classList.add('active');
+    }
 
-                        <!-- VAT -->
-                        <tr>
-                          <td colspan="3" style="background-color: #F8F9FA; padding: 10px;">
-                             <div class="content-blur" style="display: flex; justify-content: space-between;">
-                                 <span>VAT (23%)</span>
-                                 <span><span class="marker marker-text">{{formatNumber(16.purchase_gross_value - 16.purchase_net_value; 2; ","; )}}</span> zł</span>
-                             </div>
-                          </td>
-                        </tr>
-                        
-                        <!-- RAZEM -->
-                        <tr>
-                          <td colspan="2" style="background-color: #00bcd4; color: #fff; padding: 10px;">
-                             <span class="marker marker-c2" style="background: white; color: #00bcd4; border:none;">Tło: {{30.data.color_gradient_2}}</span>
-                             <div style="font-weight: bold; font-size: 16px; margin-top: 5px;">Razem do zapłaty</div>
-                          </td>
-                          <td style="background-color: #00bcd4; color: #fff; padding: 10px; text-align: right;">
-                             <div style="font-weight: bold; font-size: 16px; margin-top: 5px;">
-                               <span class="marker marker-text" style="background: rgba(255,255,255,0.3);">{{formatNumber(16.purchase_gross_value; 2; ","; )}}</span> zł
-                             </div>
-                          </td>
-                        </tr>
-                    </table>
-                    
-                    <div class="section-info" style="margin-top: 8px;">
-                      <strong>Mapowanie zmiennych:</strong><br>
-                      • Nazwa biletu: <code>{{43.data.ticketName}}</code> (kolor: {{30.data.color_gradient_1}})<br>
-                      • Ilość: <code>{{42.quantity}}</code><br>
-                      • Cena jednostkowa: <code>{{formatNumber(42.pricePerUnit; 2; ","; )}}</code><br>
-                      • Wartość netto: <code>{{formatNumber(42.totalNetAmount; 2; ","; )}}</code><br>
-                      • Suma netto: <code>{{formatNumber(16.purchase_net_value; 2; ","; )}}</code><br>
-                      • VAT: <code>{{formatNumber(16.purchase_gross_value - 16.purchase_net_value; 2; ","; )}}</code><br>
-                      • Razem: <code>{{formatNumber(16.purchase_gross_value; 2; ","; )}}</code> (tło: {{30.data.color_gradient_2}})
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- DANE ROZLICZENIOWE -->
-                <tr>
-                  <td style="padding: 0 24px 16px 24px;">
-                    <div class="section-label">SEKCJA 5: DANE ROZLICZENIOWE</div>
-                     <!-- Nagłówek -->
-                    <div style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px;">
-                         <span class="marker marker-c1">Kolor nagłówka: {{30.data.color_gradient_1}}</span><br>
-                         <strong style="color: #6a1b9a; font-size: 16px;">Dane rozliczeniowe</strong>
-                    </div>
-                    
-                    <table cellpadding="0" cellspacing="0" width="100%" style="border: 1px solid #D0D9DF;">
-                      <tr class="two-column">
-                        <td style="font-size: 14px; padding: 8px; vertical-align: top; width: 50%; border-right: 1px solid #D0D9DF;">
-                          <div class="content-blur">
-                            <p style="margin-bottom: 2px; font-weight: bold;">
-                              <span class="marker marker-text">{{16.purchaser_full}}</span>
-                            </p>
-                            <p style="margin-bottom: 2px;">
-                              <span class="marker marker-text">{{16.purchaser_email}}</span>
-                            </p>
-                            <p>
-                              <span class="marker marker-text">{{9.customFormData[].formEntries.purchaser_mobile_no}}</span>
-                            </p>
-                          </div>
-                        </td>
-                        <td style="font-size: 14px; padding: 8px; vertical-align: top; width: 50%;">
-                          <div class="content-blur">
-                            <p style="margin-bottom: 2px; font-weight: bold;">
-                              <span class="marker marker-text">{{16.billing_company_name}}</span>
-                            </p>
-                            <p style="margin-bottom: 2px;">
-                              <span class="marker marker-text">{{33.billing_address_full_new_line}}</span>
-                            </p>
-                            <p>
-                              NIP: <span class="marker marker-text">{{16.purchaser_nip}}</span>
-                            </p>
-                          </div>
-                        </td>
-                      </tr>
-                    </table>
-                    
-                    <div class="section-info" style="margin-top: 8px;">
-                      <strong>Mapowanie zmiennych:</strong><br>
-                      <strong>Lewa kolumna:</strong><br>
-                      • Imię i nazwisko: <code>{{16.purchaser_full}}</code><br>
-                      • Email: <code>{{16.purchaser_email}}</code><br>
-                      • Telefon: <code>{{9.customFormData[].formEntries.purchaser_mobile_no}}</code><br>
-                      <strong>Prawa kolumna:</strong><br>
-                      • Nazwa firmy: <code>{{16.billing_company_name}}</code><br>
-                      • Adres: <code>{{33.billing_address_full_new_line}}</code><br>
-                      • NIP: <code>{{16.purchaser_nip}}</code>
-                    </div>
-                  </td>
-                </tr>
-
-                <!-- STOPKA -->
-                <tr>
-                  <td valign="top" style="background-color: #6a1b9a; padding: 20px; text-align: center; position: relative;">
-                      <div class="section-label" style="color: rgba(255,255,255,0.8);">SEKCJA 6: STOPKA</div>
-                      <span class="marker marker-c1" style="background: white; color: #6a1b9a; border:none; position: absolute; top: 5px; right: 5px;">Tło: {{30.data.color_gradient_1}}</span>
-                      
-                      <p style="color: white; margin-top: 10px; font-size: 14px;">
-                          Masz pytania? Skontaktuj się z nami:<br>
-                          <a href="mailto:{{30.data.md_email_kontakt}}" style="color: #ffffff; text-decoration: underline;">
-                            <span class="marker marker-link" style="background: rgba(255,255,255,0.2); color: white; border-color: white; margin-top: 5px; display:inline-block;">{{30.data.md_email_kontakt}}</span>
-                          </a>
-                      </p>
-                      
-                      <div class="section-info" style="margin-top: 10px; background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3);">
-                        <strong style="color: white;">Mapowanie:</strong><br>
-                        <span style="color: rgba(255,255,255,0.9);">
-                          • Tło: <code>background-color: {{30.data.color_gradient_1}}</code><br>
-                          • Link: <code>&lt;a href="mailto:{{30.data.md_email_kontakt}}"&gt;{{30.data.md_email_kontakt}}&lt;/a&gt;</code>
-                        </span>
-                      </div>
-                  </td>
-                </tr>
-
-              </table>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-
+    function clearHighlights() {
+      emailSections.forEach(s => s.classList.remove('active'));
+      mappingCards.forEach(c => c.classList.remove('active'));
+    }
+  </script>
 </body>
 </html>
