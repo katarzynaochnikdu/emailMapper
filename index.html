@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Mapa Elementów Emaila - Infografika dla Projektantów</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #eef2f5;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
+      color: #333;
+    }
+
+    /* Style znaczników */
+    .marker {
+      font-family: 'Consolas', monospace;
+      font-size: 10px;
+      padding: 3px 6px;
+      border-radius: 3px;
+      display: inline-block;
+      margin: 1px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      font-weight: bold;
+      border: 1px solid rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 10;
+      line-height: 1.3;
+    }
+
+    /* Kolor 1 - Fioletowy */
+    .marker-c1 {
+      background-color: #6a1b9a;
+      color: #fff;
+      border: 2px solid #fff;
+    }
+    .marker-c1::before { content: "🎨 GRADIENT 1: "; opacity: 0.8; font-weight: normal; }
+
+    /* Kolor 2 - Turkusowy */
+    .marker-c2 {
+      background-color: #00bcd4;
+      color: #fff;
+      border: 2px solid #fff;
+    }
+    .marker-c2::before { content: "🎨 GRADIENT 2: "; opacity: 0.8; font-weight: normal; }
+
+    /* Linki */
+    .marker-link {
+      background-color: #fff;
+      color: #d32f2f;
+      border: 1px dashed #d32f2f;
+    }
+    .marker-link::before { content: "🔗 "; font-weight: bold; }
+
+    /* Obrazki */
+    .marker-img {
+      background-color: #fff;
+      color: #2e7d32;
+      border: 1px dashed #2e7d32;
+    }
+    .marker-img::before { content: "🖼️ "; font-weight: bold; }
+
+    /* Tekst */
+    .marker-text {
+      background-color: #fff3cd;
+      color: #856404;
+      border: 1px dashed #ffc107;
+    }
+    .marker-text::before { content: "📝 "; font-weight: bold; }
+
+    /* Wygaszenie treści tekstowej */
+    .content-blur {
+      opacity: 0.35;
+      filter: blur(0.5px);
+      pointer-events: none;
+    }
+    
+    .section-label {
+      font-size: 9px;
+      color: #999;
+      margin: 0 0 3px 0;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .wrapper { padding: 32px; }
+    .main-table { width: 600px; margin: auto; max-width: 600px; background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    
+    /* Legenda */
+    .legend-bar {
+        position: sticky;
+        top: 0;
+        background: rgba(255,255,255,0.98);
+        padding: 12px;
+        border-bottom: 2px solid #ddd;
+        margin-bottom: 20px;
+        z-index: 100;
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+        -webkit-backdrop-filter: blur(5px);
+        backdrop-filter: blur(5px);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .code-block {
+      background: #f5f5f5;
+      border-left: 3px solid #6a1b9a;
+      padding: 8px 12px;
+      margin: 8px 0;
+      font-family: 'Consolas', monospace;
+      font-size: 11px;
+      border-radius: 3px;
+    }
+
+    .section-info {
+      background: #f8f9fa;
+      border: 1px solid #dee2e6;
+      padding: 8px;
+      margin: 5px 0;
+      border-radius: 4px;
+      font-size: 10px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div style="max-width: 800px; margin: 0 auto 30px auto; background: white; padding: 24px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <h1 style="margin: 0 0 12px 0; color: #6a1b9a; font-size: 28px;">📧 Mapa Elementów Emaila</h1>
+    <p style="margin: 0 0 16px 0; color: #666; line-height: 1.6;">
+      Infografika dla projektantów kolejnych wydarzeń. Poniższa mapa pokazuje dokładne umiejscowienie każdego elementu w mailu potwierdzającym rejestrację oraz odpowiadające mu zmienne z systemu.
+    </p>
+    <div style="background: #f8f9fa; padding: 12px; border-radius: 4px; border-left: 4px solid #6a1b9a;">
+      <strong style="color: #6a1b9a;">Jak korzystać z tej mapy:</strong>
+      <ul style="margin: 8px 0 0 0; padding-left: 20px; color: #555;">
+        <li>Każdy element oznaczony jest kolorowym znacznikiem z nazwą zmiennej</li>
+        <li>Szare, rozmyte teksty to przykładowa treść (nie zmienne)</li>
+        <li>W każdej sekcji znajdziesz blok z dokładnym mapowaniem zmiennych</li>
+        <li>Schematy HTML pokazują strukturę kodu dla każdej sekcji</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="legend-bar">
+      <div class="legend-item">
+        <span class="marker marker-c1" style="background: #6a1b9a; border: none;">{{30.data.color_gradient_1}}</span>
+        <span style="font-size: 11px;">Kolor główny</span>
+      </div>
+      <div class="legend-item">
+        <span class="marker marker-c2" style="background: #00bcd4; border: none;">{{30.data.color_gradient_2}}</span>
+        <span style="font-size: 11px;">Kolor akcentu</span>
+      </div>
+      <div class="legend-item">
+        <span class="marker marker-img">Grafiki</span>
+        <span style="font-size: 11px;">Obrazki (SRC)</span>
+      </div>
+      <div class="legend-item">
+        <span class="marker marker-link">Linki</span>
+        <span style="font-size: 11px;">Odnośniki (HREF)</span>
+      </div>
+      <div class="legend-item">
+        <span class="marker marker-text">Tekst</span>
+        <span style="font-size: 11px;">Zmienne tekstowe</span>
+      </div>
+  </div>
+
+  <!-- Prawdziwa struktura maila -->
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+      <td class="wrapper">
+        <table border="0" cellpadding="0" cellspacing="0" class="main-table">
+          <tr>
+            <td>
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-family: Arial; border-collapse: collapse;">
+                
+                <!-- BANNER GÓRNY -->
+                <tr>
+                  <td valign="top" style="padding: 0; position: relative; border: 2px dashed #2e7d32;">
+                    <div class="section-label">SEKCJA 1: BANNER GÓRNY</div>
+                    <!-- Oznaczenia -->
+                    <div style="position: absolute; top: 10px; left: 10px; right: 10px; text-align: center; z-index: 5;">
+                        <span class="marker marker-link">{{30.data.url_event}}</span><br>
+                        <span class="marker marker-img">{{30.data.event_mail_link_top_banner}}</span>
+                    </div>
+                    
+                    <div class="section-info">
+                      <strong>Mapowanie:</strong><br>
+                      • Link: <code>&lt;a href="{{30.data.url_event}}"&gt;</code><br>
+                      • Obrazek: <code>&lt;img src="{{30.data.event_mail_link_top_banner}}" alt="{{16.event_name}}"&gt;</code>
+                    </div>
+                    
+                    <!-- Symulacja Obrazka -->
+                    <div style="height: 150px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 10px; position: relative;">
+                        <span style="color: rgba(255,255,255,0.8); font-weight: bold;">BANNER WYDARZENIA</span>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- TREŚĆ GŁÓWNA -->
+                <tr>
+                  <td valign="top" style="padding: 12px 24px 24px 24px;">
+                    <div class="section-label">SEKCJA 2: TREŚĆ GŁÓWNA</div>
+                    
+                    <div class="content-blur">
+                        <h2 style="font-size: 22px; margin: 0;">
+                          Cześć <strong><span class="marker marker-text">{{9.customFormData[].formEntries.purchaser_first_name}}</span></strong>
+                        </h2>
+                        <br>
+                        <p>Dziękujemy za rejestrację na <strong><span class="marker marker-text">{{16.event_name}}</span></strong>. Aby potwierdzić rezerwację miejsca, wymagane jest dokonanie płatności.</p>
+                        <br>
+                        <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%">
+                          <tr>
+                            <td style="width: 20px; vertical-align: middle;">
+                              <span class="marker marker-img">📅</span>
+                            </td>
+                            <td style="padding-left: 5px; vertical-align: middle;">
+                              <p><span class="marker marker-text">{{30.data.event_day_text_1}}, {{30.data.event_time_text}}</span></p>
+                            </td>
+                          </tr>
+                        </table>
+                        <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%">
+                          <tr>
+                            <td style="width: 20px; vertical-align: top;">
+                              <span class="marker marker-img">📍</span>
+                            </td>
+                            <td style="padding-left: 5px; vertical-align: top;">
+                              <p style="font-weight: bold;"><span class="marker marker-text">{{30.data.event_location_place}}</span></p>
+                              <p><span class="marker marker-text">{{30.data.event_location_address}}, {{30.data.event_location_zip}} {{30.data.event_location_city}}</span></p>
+                            </td>
+                          </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section-info">
+                      <strong>Mapowanie zmiennych:</strong><br>
+                      • Imię: <code>{{9.customFormData[].formEntries.purchaser_first_name}}</code><br>
+                      • Nazwa wydarzenia: <code>{{16.event_name}}</code><br>
+                      • Data: <code>{{30.data.event_day_text_1}}, {{30.data.event_time_text}}</code><br>
+                      • Lokalizacja: <code>{{30.data.event_location_place}}</code><br>
+                      • Adres: <code>{{30.data.event_location_address}}, {{30.data.event_location_zip}} {{30.data.event_location_city}}</code>
+                    </div>
+                    
+                    <div style="height: 24px;"></div>
+                    
+                    <!-- PRZYCISK PŁATNOŚCI -->
+                    <div style="position: relative; padding: 10px; border: 1px dotted #ccc; background: #fafafa;">
+                        <div class="section-label">SEKCJA 3: PRZYCISK PŁATNOŚCI (CTA)</div>
+                        
+                        <!-- Wskaźnik koloru tła -->
+                        <div style="margin-bottom: 5px;">
+                            <span class="marker marker-c1">Tło przycisku: {{30.data.color_gradient_1}}</span>
+                        </div>
+                        
+                        <table border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td style="border-radius: 8px; background-color: #6a1b9a; padding: 12px 16px;">
+                                <a href="#" style="color: #ffffff; text-decoration: none; font-weight: bold; font-size: 16px;">Opłać rezerwację</a>
+                              </td>
+                            </tr>
+                        </table>
+                        
+                        <!-- Wskaźnik linku -->
+                        <div style="margin-top: 5px;">
+                            <span class="marker marker-link">Link płatności: {{2.body.url}}</span>
+                        </div>
+                        
+                        <div class="section-info" style="margin-top: 8px;">
+                          <strong>Mapowanie:</strong><br>
+                          • Kolor tła: <code>background-color: {{30.data.color_gradient_1}}</code><br>
+                          • Link: <code>&lt;a href="{{2.body.url}}"&gt;Opłać rezerwację&lt;/a&gt;</code>
+                        </div>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- SZCZEGÓŁY ZAMÓWIENIA -->
+                <tr>
+                  <td style="padding: 0 24px 8px 24px;">
+                    <div class="section-label">SEKCJA 4: SZCZEGÓŁY ZAMÓWIENIA</div>
+                    
+                    <!-- Nagłówek Tabeli -->
+                    <div style="border-bottom: 1px solid #eee; padding: 8px 0; margin-bottom: 10px;">
+                         <span class="marker marker-c1">Kolor nagłówka: {{30.data.color_gradient_1}}</span>
+                         <h3 style="color: #6a1b9a; margin: 5px 0;">Szczegóły zamówienia</h3>
+                    </div>
+
+                    <div class="code-block">
+                      <strong>SCHEMAT PĘTLI BILETÓW ({{45.text}}):</strong><br>
+                      &lt;tr&gt;<br>
+                      &nbsp;&nbsp;&lt;td style="color: {{30.data.color_gradient_1}};"&gt;{{43.data.ticketName}}&lt;/td&gt;<br>
+                      &nbsp;&nbsp;&lt;td&gt;{{42.quantity}} szt. × {{formatNumber(42.pricePerUnit; 2; ","; )}} zł&lt;/td&gt;<br>
+                      &nbsp;&nbsp;&lt;td&gt;{{formatNumber(42.totalNetAmount; 2; ","; )}} zł&lt;/td&gt;<br>
+                      &lt;/tr&gt;
+                    </div>
+
+                    <table cellpadding="0" cellspacing="0" width="100%" style="border: 1px solid #D0D9DF;">
+                        <!-- PĘTLA BILETÓW -->
+                        <tr style="background-color: #fff;">
+                          <td style="padding: 10px;">
+                             <span class="marker marker-c1" style="font-size: 9px;">Kolor: {{30.data.color_gradient_1}}</span><br>
+                             <strong style="color: #6a1b9a;">
+                               <span class="marker marker-text">{{43.data.ticketName}}</span>
+                             </strong>
+                          </td>
+                          <td class="content-blur" style="text-align: center; padding: 10px;">
+                            <span class="marker marker-text">{{42.quantity}}</span> szt. × 
+                            <span class="marker marker-text">{{formatNumber(42.pricePerUnit; 2; ","; )}}</span> zł
+                          </td>
+                          <td class="content-blur" style="text-align: right; font-weight: bold; padding: 10px;">
+                            <span class="marker marker-text">{{formatNumber(42.totalNetAmount; 2; ","; )}}</span> zł
+                          </td>
+                        </tr>
+             
+                        <!-- PODSUMOWANIE -->
+                        <!-- Netto -->
+                        <tr>
+                          <td colspan="3" style="background-color: #F8F9FA; padding: 10px; position: relative;">
+                            <!-- Wskaźnik Border -->
+                             <div style="border-top: 2px solid #00bcd4; width: 100%; position: absolute; top:0; left:0;"></div>
+                             <span class="marker marker-c2" style="position: relative; top: -12px; font-size: 9px;">Border-top: {{30.data.color_gradient_2}}</span>
+                             <div class="content-blur" style="display: flex; justify-content: space-between; margin-top: 8px;">
+                                 <span>Kwota netto</span>
+                                 <span><span class="marker marker-text">{{formatNumber(16.purchase_net_value; 2; ","; )}}</span> zł</span>
+                             </div>
+                          </td>
+                        </tr>
+
+                        <!-- VAT -->
+                        <tr>
+                          <td colspan="3" style="background-color: #F8F9FA; padding: 10px;">
+                             <div class="content-blur" style="display: flex; justify-content: space-between;">
+                                 <span>VAT (23%)</span>
+                                 <span><span class="marker marker-text">{{formatNumber(16.purchase_gross_value - 16.purchase_net_value; 2; ","; )}}</span> zł</span>
+                             </div>
+                          </td>
+                        </tr>
+                        
+                        <!-- RAZEM -->
+                        <tr>
+                          <td colspan="2" style="background-color: #00bcd4; color: #fff; padding: 10px;">
+                             <span class="marker marker-c2" style="background: white; color: #00bcd4; border:none;">Tło: {{30.data.color_gradient_2}}</span>
+                             <div style="font-weight: bold; font-size: 16px; margin-top: 5px;">Razem do zapłaty</div>
+                          </td>
+                          <td style="background-color: #00bcd4; color: #fff; padding: 10px; text-align: right;">
+                             <div style="font-weight: bold; font-size: 16px; margin-top: 5px;">
+                               <span class="marker marker-text" style="background: rgba(255,255,255,0.3);">{{formatNumber(16.purchase_gross_value; 2; ","; )}}</span> zł
+                             </div>
+                          </td>
+                        </tr>
+                    </table>
+                    
+                    <div class="section-info" style="margin-top: 8px;">
+                      <strong>Mapowanie zmiennych:</strong><br>
+                      • Nazwa biletu: <code>{{43.data.ticketName}}</code> (kolor: {{30.data.color_gradient_1}})<br>
+                      • Ilość: <code>{{42.quantity}}</code><br>
+                      • Cena jednostkowa: <code>{{formatNumber(42.pricePerUnit; 2; ","; )}}</code><br>
+                      • Wartość netto: <code>{{formatNumber(42.totalNetAmount; 2; ","; )}}</code><br>
+                      • Suma netto: <code>{{formatNumber(16.purchase_net_value; 2; ","; )}}</code><br>
+                      • VAT: <code>{{formatNumber(16.purchase_gross_value - 16.purchase_net_value; 2; ","; )}}</code><br>
+                      • Razem: <code>{{formatNumber(16.purchase_gross_value; 2; ","; )}}</code> (tło: {{30.data.color_gradient_2}})
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- DANE ROZLICZENIOWE -->
+                <tr>
+                  <td style="padding: 0 24px 16px 24px;">
+                    <div class="section-label">SEKCJA 5: DANE ROZLICZENIOWE</div>
+                     <!-- Nagłówek -->
+                    <div style="border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 10px;">
+                         <span class="marker marker-c1">Kolor nagłówka: {{30.data.color_gradient_1}}</span><br>
+                         <strong style="color: #6a1b9a; font-size: 16px;">Dane rozliczeniowe</strong>
+                    </div>
+                    
+                    <table cellpadding="0" cellspacing="0" width="100%" style="border: 1px solid #D0D9DF;">
+                      <tr class="two-column">
+                        <td style="font-size: 14px; padding: 8px; vertical-align: top; width: 50%; border-right: 1px solid #D0D9DF;">
+                          <div class="content-blur">
+                            <p style="margin-bottom: 2px; font-weight: bold;">
+                              <span class="marker marker-text">{{16.purchaser_full}}</span>
+                            </p>
+                            <p style="margin-bottom: 2px;">
+                              <span class="marker marker-text">{{16.purchaser_email}}</span>
+                            </p>
+                            <p>
+                              <span class="marker marker-text">{{9.customFormData[].formEntries.purchaser_mobile_no}}</span>
+                            </p>
+                          </div>
+                        </td>
+                        <td style="font-size: 14px; padding: 8px; vertical-align: top; width: 50%;">
+                          <div class="content-blur">
+                            <p style="margin-bottom: 2px; font-weight: bold;">
+                              <span class="marker marker-text">{{16.billing_company_name}}</span>
+                            </p>
+                            <p style="margin-bottom: 2px;">
+                              <span class="marker marker-text">{{33.billing_address_full_new_line}}</span>
+                            </p>
+                            <p>
+                              NIP: <span class="marker marker-text">{{16.purchaser_nip}}</span>
+                            </p>
+                          </div>
+                        </td>
+                      </tr>
+                    </table>
+                    
+                    <div class="section-info" style="margin-top: 8px;">
+                      <strong>Mapowanie zmiennych:</strong><br>
+                      <strong>Lewa kolumna:</strong><br>
+                      • Imię i nazwisko: <code>{{16.purchaser_full}}</code><br>
+                      • Email: <code>{{16.purchaser_email}}</code><br>
+                      • Telefon: <code>{{9.customFormData[].formEntries.purchaser_mobile_no}}</code><br>
+                      <strong>Prawa kolumna:</strong><br>
+                      • Nazwa firmy: <code>{{16.billing_company_name}}</code><br>
+                      • Adres: <code>{{33.billing_address_full_new_line}}</code><br>
+                      • NIP: <code>{{16.purchaser_nip}}</code>
+                    </div>
+                  </td>
+                </tr>
+
+                <!-- STOPKA -->
+                <tr>
+                  <td valign="top" style="background-color: #6a1b9a; padding: 20px; text-align: center; position: relative;">
+                      <div class="section-label" style="color: rgba(255,255,255,0.8);">SEKCJA 6: STOPKA</div>
+                      <span class="marker marker-c1" style="background: white; color: #6a1b9a; border:none; position: absolute; top: 5px; right: 5px;">Tło: {{30.data.color_gradient_1}}</span>
+                      
+                      <p style="color: white; margin-top: 10px; font-size: 14px;">
+                          Masz pytania? Skontaktuj się z nami:<br>
+                          <a href="mailto:{{30.data.md_email_kontakt}}" style="color: #ffffff; text-decoration: underline;">
+                            <span class="marker marker-link" style="background: rgba(255,255,255,0.2); color: white; border-color: white; margin-top: 5px; display:inline-block;">{{30.data.md_email_kontakt}}</span>
+                          </a>
+                      </p>
+                      
+                      <div class="section-info" style="margin-top: 10px; background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3);">
+                        <strong style="color: white;">Mapowanie:</strong><br>
+                        <span style="color: rgba(255,255,255,0.9);">
+                          • Tło: <code>background-color: {{30.data.color_gradient_1}}</code><br>
+                          • Link: <code>&lt;a href="mailto:{{30.data.md_email_kontakt}}"&gt;{{30.data.md_email_kontakt}}&lt;/a&gt;</code>
+                        </span>
+                      </div>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
