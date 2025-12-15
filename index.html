@@ -4,281 +4,434 @@
   <meta charset="UTF-8">
   <title>Email Mapper - Mapa Kolorów i Linków</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-main: #0f0f1a;
+      --bg-card: rgba(30, 30, 50, 0.6);
+      --bg-card-hover: rgba(40, 40, 70, 0.8);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(139, 92, 246, 0.3);
+      --text-primary: #f1f1f4;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --accent-pink: #ec4899;
+      --accent-green: #10b981;
+      --accent-orange: #f59e0b;
+      --accent-red: #ef4444;
+      --gradient-1: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      --gradient-2: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+      --glass: rgba(255, 255, 255, 0.03);
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
-    
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f0f0f0;
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-main);
+      background-image: 
+        radial-gradient(ellipse at 20% 0%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
       min-height: 100vh;
-      padding: 20px;
+      color: var(--text-primary);
+      line-height: 1.5;
     }
 
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .header h1 {
-      color: #333;
-      font-size: 24px;
-      margin-bottom: 8px;
-    }
-
-    .header p {
-      color: #888;
-      font-size: 14px;
-    }
-
-    /* Karty/zakładki */
+    /* GŁÓWNE ZAKŁADKI - styl klasycznych tabów */
     .tabs-container {
-      max-width: 760px;
-      margin: 0 auto 20px auto;
+      max-width: 900px;
+      margin: 0 auto 0;
+      padding: 20px 20px 0 20px;
     }
 
-    .tabs {
+    .tabs-main {
       display: flex;
-      gap: 4px;
-      background: white;
-      padding: 6px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      gap: 2px;
+      border-bottom: 1px solid var(--border-subtle);
     }
 
-    .tab {
-      flex: 1;
-      padding: 10px 16px;
+    .tab-main {
+      padding: 10px 18px;
       border: none;
       background: transparent;
-      border-radius: 8px;
+      border-radius: 8px 8px 0 0;
+      font-family: inherit;
       font-size: 12px;
       font-weight: 500;
-      color: #666;
+      color: var(--text-muted);
       cursor: pointer;
       transition: all 0.2s;
+      position: relative;
+      border: 1px solid transparent;
+      border-bottom: none;
+      margin-bottom: -1px;
+      opacity: 0.6;
     }
 
-    .tab:hover {
-      background: #f5f5f5;
+    .tab-main:hover {
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.03);
+      opacity: 0.8;
     }
 
-    .tab.active {
-      background: #6a1b9a;
-      color: white;
+    .tab-main.active {
+      color: #fff;
+      background: var(--accent-purple);
+      border-color: var(--accent-purple);
+      opacity: 1;
+      font-weight: 600;
     }
 
+    .tab-main.active::after {
+      display: none;
+    }
+
+    .tab-main span {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* SUB-ZAKŁADKI - małe taby pod główną */
+    .subtabs-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: none;
+      background: var(--bg-card);
+      border-left: 1px solid var(--border-subtle);
+      border-right: 1px solid var(--border-subtle);
+    }
+
+    .subtabs-container.visible {
+      display: block;
+    }
+
+    .subtabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .subtab {
+      padding: 8px 14px;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      border-radius: 0;
+      opacity: 0.5;
+    }
+
+    .subtab:hover {
+      color: var(--text-secondary);
+      background: rgba(255,255,255,0.02);
+      opacity: 0.7;
+    }
+
+    .subtab.active {
+      color: #fff;
+      background: rgba(139, 92, 246, 0.3);
+      opacity: 1;
+      font-weight: 600;
+    }
+
+    .subtab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent-purple);
+    }
+
+    .subtab .badge {
+      display: inline-block;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 9px;
+      margin-left: 4px;
+    }
+
+    .subtab .badge-green { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+    .subtab .badge-orange { background: rgba(245, 158, 11, 0.2); color: var(--accent-orange); }
+
+    /* CONTENT */
     .tab-content {
       display: none;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
     }
 
     .tab-content.active {
       display: block;
     }
 
-    /* Legenda z przełącznikami */
+    .subcontent {
+      display: none;
+    }
+
+    .subcontent.active {
+      display: block;
+    }
+
+    /* LEGENDA */
     .legend {
       display: flex;
-      justify-content: center;
-      gap: 16px;
+      justify-content: flex-start;
+      gap: 4px;
       flex-wrap: wrap;
-      margin-bottom: 20px;
-      padding: 16px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
+      margin-bottom: 16px;
+      padding: 6px 10px;
+      background: rgba(15, 15, 26, 0.95);
+      border-radius: 6px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-subtle);
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 5px;
+      padding: 4px 8px;
+      border-radius: 4px;
       cursor: pointer;
-      padding: 8px 12px;
-      border-radius: 8px;
-      transition: all 0.2s;
+      transition: all 0.15s;
       user-select: none;
     }
 
     .legend-item:hover {
-      background: #f5f5f5;
+      background: rgba(255,255,255,0.05);
     }
 
     .legend-checkbox {
-      width: 22px;
-      height: 22px;
-      border-radius: 4px;
-      border: 2px solid #ccc;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      border: 2px solid var(--text-muted);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      transition: all 0.2s;
+      font-size: 9px;
+      transition: all 0.15s;
       flex-shrink: 0;
     }
 
     .legend-item.active .legend-checkbox {
       border-color: currentColor;
+      background: currentColor;
     }
 
-    .legend-item[data-toggle="g1"].active .legend-checkbox {
-      background: #6a1b9a;
-      border-color: #6a1b9a;
-    }
-
-    .legend-item[data-toggle="g2"].active .legend-checkbox {
-      background: #00bcd4;
-      border-color: #00bcd4;
-    }
-
-    .legend-item[data-toggle="link"].active .legend-checkbox {
-      background: #e91e63;
-      border-color: #e91e63;
-    }
-
-    .legend-item[data-toggle="img"].active .legend-checkbox,
-    .legend-item[data-toggle="img-t2"].active .legend-checkbox,
-    .legend-item[data-toggle="img-t3"].active .legend-checkbox {
-      background: #4caf50;
-      border-color: #4caf50;
-    }
-
-    .legend-item[data-toggle="g1-t2"].active .legend-checkbox,
-    .legend-item[data-toggle="g1-t3"].active .legend-checkbox {
-      background: #6a1b9a;
-      border-color: #6a1b9a;
-    }
-
-    .legend-item[data-toggle="g2-t2"].active .legend-checkbox,
-    .legend-item[data-toggle="g2-t3"].active .legend-checkbox {
-      background: #00bcd4;
-      border-color: #00bcd4;
-    }
-
-    .legend-item[data-toggle="link-t2"].active .legend-checkbox,
-    .legend-item[data-toggle="link-t3"].active .legend-checkbox {
-      background: #e91e63;
-      border-color: #e91e63;
-    }
-
-    .legend-item.active .legend-checkbox::before {
+    .legend-item.active .legend-checkbox::after {
       content: '✓';
       color: white;
       font-weight: bold;
+      font-size: 8px;
     }
 
     .legend-text {
-      font-size: 13px;
+      font-size: 10px;
       font-weight: 500;
+      color: var(--text-secondary);
     }
 
-    /* Main layout - 2 kolumny */
+    .legend-item.active .legend-text {
+      color: var(--text-primary);
+    }
+
+    /* MAIN LAYOUT */
     .main-layout {
       display: grid;
-      grid-template-columns: 440px 280px;
+      grid-template-columns: 1fr 320px;
       gap: 24px;
-      max-width: 760px;
-      margin: 0 auto;
       align-items: start;
     }
 
-    /* Email Preview - lewa kolumna */
+    /* EMAIL PREVIEW */
     .email-wrap {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      background: var(--bg-card);
+      border-radius: 20px;
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       overflow: hidden;
-      position: sticky;
-      top: 20px;
     }
 
     .email-header {
-      background: #f8f8f8;
-      padding: 10px 16px;
+      background: var(--glass);
+      padding: 12px 20px;
       font-size: 12px;
-      color: #999;
-      border-bottom: 1px solid #eee;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
+    .email-header::before {
+      content: '';
+      display: flex;
+      gap: 6px;
+    }
+
+
     .email-banner {
-      height: 100px;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      height: 90px;
+      /* Wzór szachownicy jak placeholder obrazka */
+      background-color: #e0e0e0;
+      background-image: 
+        linear-gradient(45deg, #ccc 25%, transparent 25%),
+        linear-gradient(-45deg, #ccc 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ccc 75%),
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+      background-size: 16px 16px;
+      background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: rgba(255,255,255,0.7);
-      font-size: 14px;
+      color: #888;
+      font-size: 12px;
       position: relative;
       transition: all 0.3s;
+      border: 2px dashed #bbb;
     }
 
-    .email-banner.hidden {
-      display: none;
+    .email-banner::before {
+      content: '🖼️';
+      font-size: 24px;
+      margin-right: 8px;
     }
+
+    .email-banner.hidden { display: none; }
 
     .email-body {
       padding: 20px;
+      background: white;
+      color: #333;
     }
 
     .email-text {
-      color: #888;
-      font-size: 14px;
-      line-height: 1.5;
+      color: #666;
+      font-size: 13px;
+      line-height: 1.6;
       margin-bottom: 16px;
+    }
+
+    .email-text strong { color: #333; }
+
+    .email-greeting {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 12px;
+    }
+
+    /* Alert boxes in email */
+    .email-alert {
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .email-alert-error {
+      background: #fef2f2;
+      border-left: 4px solid #ef4444;
+      color: #991b1b;
+    }
+
+    .email-alert-success {
+      background: #f0fdf4;
+      border-left: 4px solid #10b981;
+      color: #166534;
+    }
+
+    .email-alert-warning {
+      background: #fffbeb;
+      border-left: 4px solid #f59e0b;
+      color: #92400e;
+    }
+
+    .email-alert-info {
+      background: #eff6ff;
+      border-left: 4px solid #3b82f6;
+      color: #1e40af;
+    }
+
+    .email-event-info {
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 14px;
+      line-height: 1.8;
     }
 
     .email-button {
       display: inline-block;
-      padding: 12px 24px;
+      padding: 8px 16px;
       border-radius: 6px;
       text-decoration: none;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 11px;
       position: relative;
       transition: all 0.3s;
-    }
-
-    .email-button.show-g1 {
-      background: #6a1b9a;
       color: white;
     }
 
-    .email-button.hide-g1 {
-      background: #e0e0e0;
-      color: #999;
-    }
+    .email-button.g1-active { background: #6a1b9a; }
+    .email-button.g1-inactive { background: #555; color: #888; }
 
+    /* Order table */
     .order-section {
-      margin-top: 20px;
-      border: 1px solid #D0D9DF;
+      margin-top: 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
       overflow: hidden;
     }
 
     .order-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .order-table th {
       text-align: left;
-      padding: 8px;
-      font-size: 15px;
+      padding: 10px 12px;
+      font-size: 13px;
       font-weight: 600;
+      background: #fafafa;
       transition: color 0.3s;
     }
 
-    .order-table th.show-g1 { color: #6a1b9a; }
-    .order-table th.hide-g1 { color: #999; }
+    .order-table th.g1-active { color: #6a1b9a; }
+    .order-table th.g1-inactive { color: #aaa; background: #f5f5f5; }
 
     .order-table td {
-      padding: 6px 8px;
+      padding: 8px 12px;
+      border-top: 1px solid #f0f0f0;
     }
 
     .order-table .ticket-name {
@@ -286,8 +439,8 @@
       transition: color 0.3s;
     }
 
-    .order-table .ticket-name.show-g1 { color: #6a1b9a; }
-    .order-table .ticket-name.hide-g1 { color: #999; }
+    .order-table .ticket-name.g1-active { color: #6a1b9a; }
+    .order-table .ticket-name.g1-inactive { color: #aaa; }
 
     .order-table .ticket-qty {
       text-align: center;
@@ -300,131 +453,246 @@
     }
 
     .order-table .summary-row td {
-      padding: 4px 6px;
-      background: #F8F9FA;
+      padding: 6px 12px;
+      background: #f9fafb;
     }
 
-    .order-table .summary-row.first.show-g2 td {
+    .order-table .summary-row.first.g2-active td {
       border-top: 2px solid #00bcd4;
     }
 
-    .order-table .summary-row.first.hide-g2 td {
-      border-top: 2px solid #ddd;
+    .order-table .summary-row.first.g2-inactive td {
+      border-top: 2px solid #999;
     }
 
     .order-table .total-row td {
-      padding: 8px;
+      padding: 10px 12px;
       font-weight: 600;
-      font-size: 15px;
+      font-size: 14px;
       color: white;
       transition: background-color 0.3s;
     }
 
-    .order-table .total-row.show-g2 td { background: #00bcd4; }
-    .order-table .total-row.hide-g2 td { background: #999; }
+    .order-table .total-row.g2-active td { background: #00bcd4; }
+    .order-table .total-row.g2-inactive td { background: #888; }
 
+    /* Billing section */
     .billing-section {
-      margin-top: 20px;
-      border: 1px solid #D0D9DF;
+      margin-top: 16px;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      overflow: hidden;
     }
 
     .billing-header {
-      padding: 8px;
+      padding: 10px 12px;
       font-weight: 600;
-      font-size: 15px;
+      font-size: 13px;
+      background: #fafafa;
       transition: color 0.3s;
     }
 
-    .billing-header.show-g1 { color: #6a1b9a; }
-    .billing-header.hide-g1 { color: #999; }
+    .billing-header.g1-active { color: #6a1b9a; }
+    .billing-header.g1-inactive { color: #aaa; background: #f5f5f5; }
 
     .billing-content {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      font-size: 13px;
+      font-size: 11px;
+      color: #666;
     }
 
     .billing-col {
-      padding: 8px;
-      border-right: 1px solid #D0D9DF;
+      padding: 10px 12px;
     }
 
-    .billing-col:last-child {
-      border-right: none;
+    .billing-col:first-child {
+      border-right: 1px solid #f0f0f0;
     }
 
     .billing-col strong {
       display: block;
-      margin-bottom: 2px;
+      color: #333;
+      margin-bottom: 4px;
     }
 
-    .email-footer {
-      padding: 12px 20px;
+    /* NIP Verification boxes */
+    .nip-box {
+      margin-top: 16px;
+      border-radius: 8px;
+      overflow: hidden;
+      font-size: 12px;
+    }
+
+    .nip-box-success {
+      border: 1px solid #10b981;
+    }
+
+    .nip-box-success .nip-header {
+      background: #ecfdf5;
+      color: #065f46;
+      padding: 10px 12px;
+      font-weight: 600;
+    }
+
+    .nip-box-success .nip-content {
+      background: #f0fdf4;
+      padding: 12px;
+      color: #166534;
+    }
+
+    .nip-box-warning {
+      border: 1px solid #f59e0b;
+    }
+
+    .nip-box-warning .nip-header {
+      background: #fffbeb;
+      color: #92400e;
+      padding: 10px 12px;
+      font-weight: 600;
+    }
+
+    .nip-box-warning .nip-content {
+      background: #fef3c7;
+      padding: 12px;
+      color: #78350f;
+    }
+
+    .nip-box-warning .nip-button {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: #d97706;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* Tech support box */
+    .tech-support-box {
+      margin-top: 16px;
+      padding: 14px;
+      background: #fef2f2;
+      border-top: 2px solid #ef4444;
       text-align: center;
-      font-size: 13px;
+      font-size: 12px;
+    }
+
+    .tech-support-box strong {
+      color: #991b1b;
+    }
+
+    .tech-support-box a {
+      color: #dc2626;
+    }
+
+    /* Email footer */
+    .email-footer {
+      padding: 14px 20px;
+      text-align: center;
+      font-size: 12px;
       position: relative;
       transition: all 0.3s;
     }
 
-    .email-footer.show-g1 {
+    .email-footer.g1-active {
       background: #6a1b9a;
       color: white;
     }
 
-    .email-footer.hide-g1 {
-      background: #e0e0e0;
-      color: #666;
+    .email-footer.g1-active a { color: white; }
+
+    .email-footer.g1-inactive {
+      background: #444;
+      color: #888;
     }
 
-    .email-footer a {
-      text-decoration: underline;
-    }
+    .email-footer.g1-inactive a { color: #888; }
 
-    .email-footer.show-g1 a { color: white; }
-    .email-footer.hide-g1 a { color: #666; }
-
-    /* Annotations */
-    .annotation {
+    /* ANNOTATIONS */
+    .ann {
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
-      padding: 2px 5px;
-      border-radius: 3px;
+      padding: 3px 6px;
+      border-radius: 4px;
       color: white;
       position: absolute;
       white-space: nowrap;
       z-index: 20;
       pointer-events: none;
       transition: opacity 0.3s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     }
 
-    .annotation.hidden { opacity: 0; }
-    .annotation-g1 { background: #6a1b9a; }
-    .annotation-g2 { background: #00bcd4; }
-    .annotation-link { background: #e91e63; }
-    .annotation-img { background: #4caf50; }
+    .ann.hidden { opacity: 0; }
+    .ann-g1 { background: var(--accent-purple); }
+    .ann-g2 { background: var(--accent-cyan); }
+    .ann-link { background: var(--accent-pink); }
+    .ann-img { background: var(--accent-green); }
 
-    .inline-annotation {
+    .inline-ann {
+      font-family: 'JetBrains Mono', monospace;
       font-size: 8px;
-      padding: 1px 4px;
-      border-radius: 2px;
+      padding: 2px 5px;
+      border-radius: 3px;
       color: white;
-      margin-left: 4px;
+      margin-left: 6px;
       white-space: nowrap;
       transition: opacity 0.3s;
     }
 
-    .inline-annotation.hidden { opacity: 0; }
+    .inline-ann.hidden { opacity: 0; }
 
-    /* Miganie elementu */
+    /* BLINKING */
     @keyframes blink {
-      0%, 100% { outline: 3px solid transparent; }
-      50% { outline: 3px solid #ff5722; outline-offset: 2px; }
+      0%, 100% { box-shadow: 0 0 0 0 transparent; }
+      50% { box-shadow: 0 0 0 3px var(--accent-orange); }
     }
 
     .blinking {
       animation: blink 0.5s ease-in-out infinite;
     }
 
-    /* Prawa kolumna - podsumowanie */
+    /* CUSTOM TOOLTIPS */
+    [data-tooltip] {
+      position: relative;
+      cursor: help;
+    }
+
+    [data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: fixed;
+      background: #1a1a2e;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 400;
+      line-height: 1.4;
+      white-space: pre-line;
+      max-width: 280px;
+      text-align: left;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s;
+      z-index: 9999;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      pointer-events: none;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    [data-tooltip]:hover::after {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* SIDEBAR */
     .sidebar {
       display: flex;
       flex-direction: column;
@@ -432,594 +700,877 @@
     }
 
     .summary-card {
-      background: white;
-      border-radius: 10px;
-      padding: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 16px;
+      border: 1px solid var(--border-subtle);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
     }
 
     .summary-card h2 {
       font-size: 13px;
-      margin-bottom: 10px;
-      color: #333;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .summary-card h3 {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin: 14px 0 8px 0;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .summary-card h2 .dot {
-      width: 14px;
-      height: 14px;
+    .summary-card h3 .color-dot {
+      width: 10px;
+      height: 10px;
       border-radius: 3px;
-    }
-
-    .summary-card h3 {
-      font-size: 11px;
-      color: #666;
-      margin: 10px 0 6px 0;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .summary-card h3 .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 2px;
     }
 
     .summary-card ul {
       list-style: none;
-      font-size: 11px;
-      color: #555;
     }
 
     .summary-card li {
-      padding: 3px 0;
-      border-bottom: 1px solid #f0f0f0;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 11px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .summary-card li:hover {
+      color: var(--text-primary);
     }
 
     .summary-card li:last-child {
       border-bottom: none;
     }
 
+    .summary-card li strong {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
     .var-code {
       display: block;
-      font-family: 'Consolas', monospace;
+      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
-      color: #999;
-      margin-top: 1px;
+      color: var(--text-muted);
+      margin-top: 3px;
       word-break: break-all;
     }
 
-    .warning {
-      color: #e53935;
-      font-weight: 600;
-      font-size: 10px;
-      margin-bottom: 6px;
+    .diff-card {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.3);
     }
 
+    .diff-card h2 {
+      color: var(--accent-orange);
+    }
+
+    .warning-text {
+      color: var(--accent-red);
+      font-weight: 600;
+      font-size: 10px;
+      margin-bottom: 8px;
+    }
+
+    /* RESPONSIVE */
     @media (max-width: 900px) {
       .main-layout {
         grid-template-columns: 1fr;
       }
-      .email-wrap {
-        position: relative;
-        top: 0;
+      .tabs-main {
+        flex-direction: column;
+      }
+      .subtabs {
+        flex-wrap: wrap;
       }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <h1>🎨 Mapa Kolorów i Linków</h1>
-    <p>Kliknij element w legendzie, aby go włączyć/wyłączyć</p>
-  </div>
 
-  <!-- KARTY SCHEMATÓW -->
+  <!-- GŁÓWNE ZAKŁADKI -->
   <div class="tabs-container">
-    <div class="tabs">
-      <button class="tab active" data-tab="1">📧 Potwierdzenie rejestracji</button>
-      <button class="tab" data-tab="2">⚠️ Problem z płatnością</button>
-      <button class="tab" data-tab="3">📅 Przypomnienie</button>
+    <div class="tabs-main">
+      <button class="tab-main active" data-tab="payment-link"><span>💳 Link do płatności</span></button>
+      <button class="tab-main" data-tab="payment-confirm"><span>✅ Potwierdzenie płatności</span></button>
+      <button class="tab-main" data-tab="payment-failed"><span>❌ Nieudana rejestracja</span></button>
     </div>
   </div>
 
-  <!-- TAB 1: Potwierdzenie rejestracji -->
-  <div class="tab-content active" data-content="1">
-
-  <!-- LEGENDA -->
-  <div class="legend">
-    <div class="legend-item active" data-toggle="g1" style="color: #6a1b9a;">
-      <div class="legend-checkbox"></div>
-      <span class="legend-text">Gradient 1</span>
-    </div>
-    <div class="legend-item active" data-toggle="g2" style="color: #00bcd4;">
-      <div class="legend-checkbox"></div>
-      <span class="legend-text">Gradient 2</span>
-    </div>
-    <div class="legend-item active" data-toggle="img" style="color: #4caf50;">
-      <div class="legend-checkbox"></div>
-      <span class="legend-text">🖼️ Obrazy (src)</span>
-    </div>
-    <div class="legend-item active" data-toggle="link" style="color: #e91e63;">
-      <div class="legend-checkbox"></div>
-      <span class="legend-text">🔗 Linki (href)</span>
+  <!-- SUB-ZAKŁADKI dla Link do płatności -->
+  <div class="subtabs-container visible" id="subtabs-payment-link">
+    <div class="subtabs">
+      <button class="subtab active" data-subtab="personal">Osoba fizyczna</button>
+      <button class="subtab" data-subtab="nip-ok">NIP <span class="badge badge-green">✓</span></button>
+      <button class="subtab" data-subtab="nip-bad">NIP <span class="badge badge-orange">⚠</span></button>
     </div>
   </div>
 
-  <!-- MAIN LAYOUT -->
-  <div class="main-layout">
-    
-    <!-- LEWA KOLUMNA - EMAIL -->
-    <div class="email-wrap">
-      <div class="email-header">📧 Model maila</div>
-      
-      <div class="email-banner" id="email-banner" title="🖼️ OBRAZEK: {{30.data.event_mail_link_top_banner}}&#10;🔗 LINK: {{30.data.url_event}}">
-        <span class="annotation annotation-img" style="top: -16px; left: 8px; font-size: 8px;" data-type="img">🖼️ src: {{30.data.event_mail_link_top_banner}}</span>
-        <span class="annotation annotation-link" style="bottom: 4px; left: 8px; font-size: 8px;" data-type="link">🔗 href: {{30.data.url_event}}</span>
-        (top banner maila)
+  <!-- ═══════════════════════════════════════════════════════════════════
+       TAB: LINK DO PŁATNOŚCI
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="tab-content active" data-content="payment-link">
+
+    <!-- === SUBCONTENT: OSOBA FIZYCZNA === -->
+    <div class="subcontent active" data-subcontent="personal">
+      <div class="legend">
+        <div class="legend-item active" data-toggle="g1" style="color: var(--accent-purple);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">Gradient 1</span>
+        </div>
+        <div class="legend-item active" data-toggle="g2" style="color: var(--accent-cyan);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">Gradient 2</span>
+        </div>
+        <div class="legend-item active" data-toggle="img" style="color: var(--accent-green);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">🖼️ top_banner (url)</span>
+        </div>
+        <div class="legend-item active" data-toggle="link" style="color: var(--accent-pink);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">🔗 Linki (href)</span>
+        </div>
       </div>
-      
-      <div class="email-body">
-        <div class="email-text">
-          Cześć Magdalena<br>
-          Dziękujemy za rejestrację...
-        </div>
 
-        <div style="position: relative; display: inline-block; margin-bottom: 16px;">
-          <span class="annotation annotation-g1" style="top: -16px; left: 0;" data-type="g1">tło</span>
-          <span class="annotation annotation-link" style="bottom: -16px; left: 0;" data-type="link">🔗 href</span>
-          <a href="#" class="email-button show-g1" id="cta-button" title="🎨 TŁO: {{30.data.color_gradient_1}}&#10;🔗 LINK: {{2.body.url}}">Opłać rezerwację</a>
-        </div>
-
-        <div class="order-section">
-          <table class="order-table">
-            <tr>
-              <th colspan="3" class="show-g1" id="order-header" title="🎨 KOLOR: {{30.data.color_gradient_1}}">
-                Szczegóły zamówienia
-                <span class="inline-annotation annotation-g1" data-type="g1">kolor</span>
-              </th>
-            </tr>
-            <tr id="ticket-names">
-              <td class="ticket-name show-g1" data-g1-text>
-                Bilet Connect
-                <span class="inline-annotation annotation-g1" data-type="g1">kolor</span>
-              </td>
-              <td class="ticket-qty">1 szt. × 567,00 zł</td>
-              <td class="ticket-price">567,00 zł</td>
-            </tr>
-            <tr>
-              <td class="ticket-name show-g1" data-g1-text>*Bilet Connect +</td>
-              <td class="ticket-qty">3 szt. × 399,00 zł</td>
-              <td class="ticket-price">1 197,00 zł</td>
-            </tr>
-            <tr class="summary-row first show-g2" id="summary-first">
-              <td colspan="2">
-                Kwota netto
-                <span class="inline-annotation annotation-g2" data-type="g2">border</span>
-              </td>
-              <td style="text-align: right;">1 764,00 zł</td>
-            </tr>
-            <tr class="summary-row">
-              <td colspan="2">VAT (23%)</td>
-              <td style="text-align: right;">405,72 zł</td>
-            </tr>
-            <tr class="total-row show-g2" id="total-row">
-              <td colspan="2">
-                Razem do zapłaty
-                <span class="inline-annotation annotation-g2" data-type="g2" style="background: rgba(255,255,255,0.3);">tło</span>
-              </td>
-              <td style="text-align: right;">2 169,72 zł</td>
-            </tr>
-          </table>
-        </div>
-
-        <div class="billing-section">
-          <div class="billing-header show-g1" id="billing-header">
-            Dane rozliczeniowe
-            <span class="inline-annotation annotation-g1" data-type="g1">kolor</span>
+      <div class="main-layout">
+        <div class="email-wrap">
+          <div class="email-header">
+            Osoba fizyczna
           </div>
-          <div class="billing-content">
-            <div class="billing-col">
-              <strong>Magdalena Kapusta</strong>
-              tescionweb2@digitalunity.pl<br>
-              +48888469553
+          
+          <div class="email-banner" id="banner-personal" data-tooltip="🖼️ OBRAZEK BANNERA
+src: {{30.data.event_mail_link_top_banner}}
+
+🔗 LINK BANNERA (kliknięcie)
+href: {{30.data.url_event}}
+
+⚠️ Bez tego URL-a banner nie pojawi się!">
+            <span class="ann ann-img" style="top: 6px; left: 8px;" data-type="img">src: {{30.data.event_mail_link_top_banner}}</span>
+            <span class="ann ann-link" style="bottom: 6px; left: 8px;" data-type="link">href: {{30.data.url_event}}</span>
+            (top banner)
+          </div>
+          
+          <div class="email-body">
+            <div class="email-greeting">Cześć <strong>{{purchaser_first_name}}</strong></div>
+            <div class="email-text">
+              Dziękujemy za rejestrację na <strong>{{event_name}}</strong>. 
+              Aby potwierdzić rezerwację miejsca, wymagane jest dokonanie płatności.
             </div>
-            <div class="billing-col">
-              <strong>Katarzyna Ochnik DIGITAL UNITY</strong>
-              Bluszczańska 74/58<br>
-              NIP: 9710668048
+
+            <div class="email-event-info">
+              📅 {{event_day_text_1}}, {{event_time_text}}<br>
+              📍 {{event_location_place}}, {{event_location_address}}
+            </div>
+
+            <div style="position: relative; display: inline-block; margin-bottom: 16px;">
+              <span class="ann ann-g1" style="top: -18px; left: 0;" data-type="g1">gradient_1</span>
+              <span class="ann ann-link" style="bottom: -18px; left: 0;" data-type="link">href: {{2.body.url}}</span>
+              <a href="#" class="email-button g1-active" id="btn-personal" data-tooltip="🎨 TŁO PRZYCISKU
+background-color: {{30.data.color_gradient_1}}
+
+🔗 LINK PRZYCISKU
+href: {{2.body.url}}">Opłać rezerwację</a>
+            </div>
+
+            <div class="order-section">
+              <table class="order-table">
+                <tr>
+                  <th colspan="3" class="g1-active" id="order-h-personal" data-tooltip="🎨 KOLOR TEKSTU
+color: {{30.data.color_gradient_1}}">
+                    Szczegóły zamówienia
+                    <span class="inline-ann ann-g1" data-type="g1">gradient_1</span>
+                  </th>
+                </tr>
+                <tr>
+                  <td class="ticket-name g1-active" id="ticket-personal" data-tooltip="🎨 KOLOR NAZWY BILETU
+color: {{30.data.color_gradient_1}}">
+                    Bilet Standard
+                    <span class="inline-ann ann-g1" data-type="g1">gradient_1</span>
+                  </td>
+                  <td class="ticket-qty">2 × 399,00 zł</td>
+                  <td class="ticket-price">798,00 zł</td>
+                </tr>
+                <tr class="summary-row first g2-active" id="sum-personal" data-tooltip="🎨 LINIA NAD PODSUMOWANIEM
+border-top: 2px solid {{30.data.color_gradient_2}}">
+                  <td colspan="2">Kwota netto <span class="inline-ann ann-g2" data-type="g2">gradient_2</span></td>
+                  <td style="text-align: right;">648,78 zł</td>
+                </tr>
+                <tr class="summary-row">
+                  <td colspan="2">VAT (23%)</td>
+                  <td style="text-align: right;">149,22 zł</td>
+                </tr>
+                <tr class="total-row g2-active" id="total-personal" data-tooltip="🎨 TŁO WIERSZA SUMY
+background-color: {{30.data.color_gradient_2}}">
+                  <td colspan="2">Razem do zapłaty <span class="inline-ann ann-g2" data-type="g2" style="background: rgba(255,255,255,0.3);">gradient_2</span></td>
+                  <td style="text-align: right;">798,00 zł</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="billing-section">
+              <div class="billing-header g1-active" id="bill-h-personal" data-tooltip="🎨 KOLOR NAGŁÓWKA
+color: {{30.data.color_gradient_1}}">
+                Dane rozliczeniowe
+                <span class="inline-ann ann-g1" data-type="g1">gradient_1</span>
+              </div>
+              <div class="billing-content">
+                <div class="billing-col">
+                  <strong>{{purchaser_full}}</strong>
+                  {{purchaser_email}}<br>
+                  {{purchaser_mobile_no}}
+                </div>
+                <div class="billing-col">
+                  <strong>Osoba fizyczna</strong>
+                  {{billing_address_full}}
+                </div>
+              </div>
+            </div>
+
+            <!-- Info box: Faktura na osobę fizyczną -->
+            <div class="email-alert email-alert-info" style="margin-top: 16px;">
+              📄 <strong>Faktura zostanie wystawiona na osobę fizyczną</strong> zgodnie z podanymi danymi rozliczeniowymi.
             </div>
           </div>
-        </div>
-      </div>
 
-      <div class="email-footer show-g1" id="email-footer">
-        <span class="annotation annotation-g1" style="top: 2px; right: 8px;" data-type="g1">tło</span>
-        Masz pytania? 
-        <a href="#">
-          eventy@medidesk.com
-          <span class="inline-annotation annotation-link" data-type="link">🔗</span>
-        </a>
-      </div>
-    </div>
+          <div class="email-footer g1-active" id="footer-personal" data-tooltip="🎨 TŁO STOPKI
+background-color: {{30.data.color_gradient_1}}
 
-    <!-- PRAWA KOLUMNA - PODSUMOWANIE -->
-    <div class="sidebar">
-      
-      <!-- KOLORY -->
-      <div class="summary-card">
-        <h2>🎨 Kolory</h2>
-        
-        <h3><span class="dot" style="background: #6a1b9a;"></span> Gradient 1</h3>
-        <ul>
-          <li data-highlight="cta-button">Przycisk "Opłać rezerwację" <span class="var-code">background-color: {{30.data.color_gradient_1}}</span></li>
-          <li data-highlight="order-header">Nagłówek "Szczegóły zamówienia" <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
-          <li data-highlight="ticket-names">Nazwy biletów <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
-          <li data-highlight="billing-header">Nagłówek "Dane rozliczeniowe" <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
-          <li data-highlight="email-footer">Stopka (tło) <span class="var-code">background-color: {{30.data.color_gradient_1}}</span></li>
-        </ul>
-
-        <h3><span class="dot" style="background: #00bcd4;"></span> Gradient 2</h3>
-        <ul>
-          <li data-highlight="summary-first">Linia nad "Kwota netto" <span class="var-code">border-top: {{30.data.color_gradient_2}}</span></li>
-          <li data-highlight="total-row">Wiersz "Razem do zapłaty" <span class="var-code">background-color: {{30.data.color_gradient_2}}</span></li>
-        </ul>
-      </div>
-
-      <!-- OBRAZY -->
-      <div class="summary-card">
-        <h2>🖼️ Obrazy zewnętrzne (src)</h2>
-        <p class="warning">⚠️ Bez wstawienia linku obrazu, element nie pojawi się!</p>
-        <ul>
-          <li data-highlight="email-banner">
-            <strong>Top banner maila</strong>
-            <span class="var-code">{{30.data.event_mail_link_top_banner}}</span>
-          </li>
-        </ul>
-      </div>
-
-      <!-- LINKI -->
-      <div class="summary-card">
-        <h2>🔗 Linki do aplikacji (href)</h2>
-        <ul>
-          <li data-highlight="email-banner">
-            <strong>Banner</strong> - strona wydarzenia
-            <span class="var-code">{{30.data.url_event}}</span>
-          </li>
-          <li data-highlight="cta-button">
-            <strong>Przycisk płatności</strong>
-            <span class="var-code">{{2.body.url}}</span>
-          </li>
-          <li data-highlight="email-footer">
-            <strong>Email w stopce</strong>
-            <span class="var-code">mailto:{{30.data.md_email_kontakt}}</span>
-          </li>
-        </ul>
-      </div>
-
-    </div>
-  </div>
-
-  </div><!-- koniec tab-content 1 -->
-
-  <!-- TAB 2: Problem z płatnością -->
-  <div class="tab-content" data-content="2">
-
-  <!-- LEGENDA -->
-  <div class="legend">
-    <div class="legend-item active" data-toggle="g1-t2" style="color: #6a1b9a;">
-      <div class="legend-checkbox"></div>
-      <span class="legend-text">Gradient 1</span>
-    </div>
-    <div class="legend-item active" data-toggle="g2-t2" style="color: #00bcd4;">
-      <div class="legend-checkbox"></div>
-      <span class="legend-text">Gradient 2</span>
-    </div>
-    <div class="legend-item active" data-toggle="img-t2" style="color: #4caf50;">
-      <div class="legend-checkbox"></div>
-      <span class="legend-text">🖼️ Obrazy (src)</span>
-    </div>
-    <div class="legend-item active" data-toggle="link-t2" style="color: #e91e63;">
-      <div class="legend-checkbox"></div>
-      <span class="legend-text">🔗 Linki (href)</span>
-    </div>
-  </div>
-
-  <div class="main-layout">
-    <!-- EMAIL -->
-    <div class="email-wrap">
-      <div class="email-header">📧 Model maila - Problem z płatnością</div>
-      
-      <div class="email-banner" id="email-banner-t2" title="🖼️ OBRAZEK: {{30.data.event_mail_link_top_banner}}&#10;🔗 LINK: {{30.data.url_event}}">
-        <span class="annotation annotation-img" style="top: -16px; left: 8px; font-size: 8px;" data-type="img-t2">🖼️ src: {{30.data.event_mail_link_top_banner}}</span>
-        <span class="annotation annotation-link" style="bottom: 4px; left: 8px; font-size: 8px;" data-type="link-t2">🔗 href: {{30.data.url_event}}</span>
-        (top banner maila)
-      </div>
-      
-      <div class="email-body">
-        <div class="email-text">
-          Cześć Magdalena
-        </div>
-        
-        <!-- KOMUNIKAT BŁĘDU -->
-        <div id="error-message-t2" style="background: #ffebee; border-left: 4px solid #d32f2f; padding: 12px; margin-bottom: 16px; font-size: 13px;">
-          <span style="color: #d32f2f; font-weight: bold;">⚠️ Niestety Twoja rejestracja nie powiodła się.</span><br>
-          <span style="color: #666;">Sprawdź formularz i spróbuj ponownie.</span>
-        </div>
-
-        <div style="font-size: 11px; color: #888; margin-bottom: 12px;">
-          📅 5 lutego 2026, 10:00<br>
-          📍 Regent Warsaw Hotel
-        </div>
-
-        <div style="position: relative; display: inline-block; margin-bottom: 16px;">
-          <span class="annotation annotation-g1" style="top: -16px; left: 0;" data-type="g1-t2">tło</span>
-          <span class="annotation annotation-link" style="bottom: -16px; left: 0;" data-type="link-t2">🔗 href</span>
-          <a href="#" class="email-button" id="cta-button-t2" style="background: #6a1b9a; color: white;">Zarejestruj się ponownie</a>
-        </div>
-
-        <div class="order-section">
-          <table class="order-table">
-            <tr>
-              <th colspan="3" id="order-header-t2" style="color: #6a1b9a;">
-                Szczegóły zamówienia
-                <span class="inline-annotation annotation-g1" data-type="g1-t2">kolor</span>
-              </th>
-            </tr>
-            <tr id="ticket-names-t2">
-              <td class="ticket-name" style="color: #6a1b9a;">
-                Bilet Connect
-                <span class="inline-annotation annotation-g1" data-type="g1-t2">kolor</span>
-              </td>
-              <td class="ticket-qty">1 szt. × 567,00 zł</td>
-              <td class="ticket-price">567,00 zł</td>
-            </tr>
-            <tr class="summary-row first" id="summary-first-t2" style="border-top: 2px solid #00bcd4;">
-              <td colspan="2">
-                Kwota netto
-                <span class="inline-annotation annotation-g2" data-type="g2-t2">border</span>
-              </td>
-              <td style="text-align: right;">1 764,00 zł</td>
-            </tr>
-            <tr class="summary-row">
-              <td colspan="2">VAT (23%)</td>
-              <td style="text-align: right;">405,72 zł</td>
-            </tr>
-            <tr class="total-row" id="total-row-t2" style="background: #00bcd4;">
-              <td colspan="2" style="color: white; padding: 8px;">
-                Razem do zapłaty
-                <span class="inline-annotation annotation-g2" data-type="g2-t2" style="background: rgba(255,255,255,0.3);">tło</span>
-              </td>
-              <td style="text-align: right; color: white; padding: 8px;">2 169,72 zł</td>
-            </tr>
-          </table>
-        </div>
-
-        <div class="billing-section">
-          <div id="billing-header-t2" style="padding: 8px; font-weight: 600; font-size: 15px; color: #6a1b9a;">
-            Dane rozliczeniowe
-            <span class="inline-annotation annotation-g1" data-type="g1-t2">kolor</span>
+🔗 LINK EMAIL
+href: mailto:{{30.data.md_email_kontakt}}">
+            <span class="ann ann-g1" style="top: 4px; right: 8px;" data-type="g1">gradient_1</span>
+            Masz pytania? <a href="#">{{md_email_kontakt}} <span class="inline-ann ann-link" data-type="link">href</span></a>
           </div>
-          <div class="billing-content">
-            <div class="billing-col">
-              <strong>Magdalena Kapusta</strong>
-              tescionweb2@digitalunity.pl
-            </div>
-            <div class="billing-col">
-              <strong>DIGITAL UNITY</strong>
-              NIP: 9710668048
-            </div>
+        </div>
+
+        <div class="sidebar">
+          <div class="summary-card">
+            <h2>🎨 Kolory</h2>
+            <h3><span class="color-dot" style="background: var(--accent-purple);"></span> Gradient 1</h3>
+            <ul>
+              <li data-highlight="btn-personal"><strong>Przycisk CTA</strong> <span class="var-code">background: {{30.data.color_gradient_1}}</span></li>
+              <li data-highlight="order-h-personal"><strong>Nagłówek zamówienia</strong> <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
+              <li data-highlight="ticket-personal"><strong>Nazwy biletów</strong> <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
+              <li data-highlight="bill-h-personal"><strong>Nagłówek rozliczenia</strong> <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
+              <li data-highlight="footer-personal"><strong>Stopka (tło)</strong> <span class="var-code">background: {{30.data.color_gradient_1}}</span></li>
+            </ul>
+            <h3><span class="color-dot" style="background: var(--accent-cyan);"></span> Gradient 2</h3>
+            <ul>
+              <li data-highlight="sum-personal"><strong>Linia podsumowania</strong> <span class="var-code">border-top: {{30.data.color_gradient_2}}</span></li>
+              <li data-highlight="total-personal"><strong>Wiersz "Razem"</strong> <span class="var-code">background: {{30.data.color_gradient_2}}</span></li>
+            </ul>
+          </div>
+
+          <div class="summary-card">
+            <h2>🖼️ Obrazy (src)</h2>
+            <p class="warning-text">⚠️ Brak linku = element nie pojawi się!</p>
+            <ul>
+              <li data-highlight="banner-personal"><strong>Top banner</strong> <span class="var-code">{{30.data.event_mail_link_top_banner}}</span></li>
+            </ul>
+          </div>
+
+          <div class="summary-card">
+            <h2>🔗 Linki (href)</h2>
+            <ul>
+              <li data-highlight="banner-personal"><strong>Banner → strona wydarzenia</strong> <span class="var-code">{{30.data.url_event}}</span></li>
+              <li data-highlight="btn-personal"><strong>Przycisk płatności</strong> <span class="var-code">{{2.body.url}}</span></li>
+              <li data-highlight="footer-personal"><strong>Email w stopce</strong> <span class="var-code">mailto:{{30.data.md_email_kontakt}}</span></li>
+            </ul>
           </div>
         </div>
       </div>
+    </div>
 
-      <div id="email-footer-t2" style="background: #6a1b9a; color: white; padding: 12px; text-align: center; font-size: 13px;">
-        <span class="annotation annotation-g1" style="top: 2px; right: 8px;" data-type="g1-t2">tło</span>
-        Masz pytania? 
-        <a href="#" style="color: white;">
-          eventy@medidesk.com
-          <span class="inline-annotation annotation-link" data-type="link-t2">🔗</span>
-        </a>
+    <!-- === SUBCONTENT: NIP POPRAWNY === -->
+    <div class="subcontent" data-subcontent="nip-ok">
+      <div class="legend">
+        <div class="legend-item active" data-toggle="g1-nip" style="color: var(--accent-purple);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">Gradient 1</span>
+        </div>
+        <div class="legend-item active" data-toggle="g2-nip" style="color: var(--accent-cyan);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">Gradient 2</span>
+        </div>
+        <div class="legend-item active" data-toggle="img-nip" style="color: var(--accent-green);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">🖼️ top_banner (url)</span>
+        </div>
+        <div class="legend-item active" data-toggle="link-nip" style="color: var(--accent-pink);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">🔗 Linki (href)</span>
+        </div>
+      </div>
+
+      <div class="main-layout">
+        <div class="email-wrap">
+          <div class="email-header">
+            NIP poprawny ✅
+          </div>
+          
+          <div class="email-banner" id="banner-nip-ok">
+            <span class="ann ann-img" style="top: 6px; left: 8px;" data-type="img-nip">src: {{30.data.event_mail_link_top_banner}}</span>
+            <span class="ann ann-link" style="bottom: 6px; left: 8px;" data-type="link-nip">href: {{30.data.url_event}}</span>
+            (top banner)
+          </div>
+          
+          <div class="email-body">
+            <div class="email-greeting">Cześć <strong>{{purchaser_first_name}}</strong></div>
+            <div class="email-text">
+              Dziękujemy za rejestrację na <strong>{{event_name}}</strong>. 
+              Aby potwierdzić rezerwację miejsca, wymagane jest dokonanie płatności.
+            </div>
+
+            <div class="email-event-info">
+              📅 {{event_day_text_1}}, {{event_time_text}}<br>
+              📍 {{event_location_place}}
+            </div>
+
+            <div style="position: relative; display: inline-block; margin-bottom: 16px;">
+              <span class="ann ann-g1" style="top: -18px; left: 0;" data-type="g1-nip">gradient_1</span>
+              <span class="ann ann-link" style="bottom: -18px; left: 0;" data-type="link-nip">href: {{2.body.url}}</span>
+              <a href="#" class="email-button g1-active" id="btn-nip-ok">Opłać rezerwację</a>
+            </div>
+
+            <div class="order-section">
+              <table class="order-table">
+                <tr><th colspan="3" class="g1-active" id="order-h-nip-ok">Szczegóły zamówienia <span class="inline-ann ann-g1" data-type="g1-nip">gradient_1</span></th></tr>
+                <tr>
+                  <td class="ticket-name g1-active" id="ticket-nip-ok">Bilet Premium <span class="inline-ann ann-g1" data-type="g1-nip">gradient_1</span></td>
+                  <td class="ticket-qty">1 × 999,00 zł</td>
+                  <td class="ticket-price">999,00 zł</td>
+                </tr>
+                <tr class="summary-row first g2-active" id="sum-nip-ok">
+                  <td colspan="2">Kwota netto <span class="inline-ann ann-g2" data-type="g2-nip">gradient_2</span></td>
+                  <td style="text-align: right;">812,20 zł</td>
+                </tr>
+                <tr class="summary-row">
+                  <td colspan="2">VAT (23%)</td>
+                  <td style="text-align: right;">186,80 zł</td>
+                </tr>
+                <tr class="total-row g2-active" id="total-nip-ok">
+                  <td colspan="2">Razem do zapłaty <span class="inline-ann ann-g2" data-type="g2-nip" style="background: rgba(255,255,255,0.3);">gradient_2</span></td>
+                  <td style="text-align: right;">999,00 zł</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="billing-section">
+              <div class="billing-header g1-active" id="bill-h-nip-ok">Dane rozliczeniowe <span class="inline-ann ann-g1" data-type="g1-nip">gradient_1</span></div>
+              <div class="billing-content">
+                <div class="billing-col">
+                  <strong>{{purchaser_full}}</strong>
+                  {{purchaser_email}}
+                </div>
+                <div class="billing-col">
+                  <strong>{{billing_company_name}}</strong>
+                  NIP: {{purchaser_nip}}
+                </div>
+              </div>
+            </div>
+
+            <!-- NIP POPRAWNY BOX -->
+            <div class="nip-box nip-box-success" id="nip-box-ok">
+              <div class="nip-header">✅ Weryfikacja NIP</div>
+              <div class="nip-content">
+                <strong>NIP: {{114.data.gus_data.nip}}</strong> — POPRAWNY<br><br>
+                <span style="font-size: 11px; color: #065f46;">
+                  🏢 {{114.data.gus_data.name}}<br>
+                  📍 {{114.data.gus_data.street}}, {{114.data.gus_data.zip}} {{114.data.gus_data.city}}<br>
+                  🗺️ woj. {{114.data.gus_data.voivodeship}}<br>
+                  📋 REGON: {{114.data.gus_data.regon}}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="email-footer g1-active" id="footer-nip-ok">
+            <span class="ann ann-g1" style="top: 4px; right: 8px;" data-type="g1-nip">gradient_1</span>
+            Masz pytania? <a href="#">{{md_email_kontakt}} <span class="inline-ann ann-link" data-type="link-nip">href</span></a>
+          </div>
+        </div>
+
+        <div class="sidebar">
+          <div class="summary-card diff-card">
+            <h2>⚡ Różnica vs. Osoba fizyczna</h2>
+            <ul>
+              <li><strong>Sekcja GUS</strong> — dane firmy z rejestru</li>
+              <li><strong>Zmienne GUS:</strong> <span class="var-code">{{114.data.gus_data.*}}</span></li>
+            </ul>
+          </div>
+
+          <div class="summary-card">
+            <h2>🆕 Zmienne GUS</h2>
+            <ul>
+              <li data-highlight="nip-box-ok"><strong>NIP</strong> <span class="var-code">{{114.data.gus_data.nip}}</span></li>
+              <li data-highlight="nip-box-ok"><strong>Nazwa firmy</strong> <span class="var-code">{{114.data.gus_data.name}}</span></li>
+              <li data-highlight="nip-box-ok"><strong>Ulica</strong> <span class="var-code">{{114.data.gus_data.street}}</span></li>
+              <li data-highlight="nip-box-ok"><strong>Kod + miasto</strong> <span class="var-code">{{114.data.gus_data.zip}} {{114.data.gus_data.city}}</span></li>
+              <li data-highlight="nip-box-ok"><strong>Województwo</strong> <span class="var-code">{{114.data.gus_data.voivodeship}}</span></li>
+              <li data-highlight="nip-box-ok"><strong>REGON</strong> <span class="var-code">{{114.data.gus_data.regon}}</span></li>
+            </ul>
+          </div>
+
+          <div class="summary-card">
+            <h2>🎨 Kolory (bez zmian)</h2>
+            <p style="font-size: 11px; color: var(--text-muted);">Identyczne jak w wersji "Osoba fizyczna"</p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- PODSUMOWANIE -->
-    <div class="sidebar">
-      
-      <div class="summary-card" style="background: #fff3e0; border: 2px solid #ff9800;">
-        <h2>⚠️ Różnice vs. Potwierdzenie rejestracji</h2>
-        <ul style="font-size: 11px;">
-          <li><strong>Komunikat błędu</strong> - czerwony alert o nieudanej rejestracji</li>
-          <li><strong>Przycisk</strong> - "Zarejestruj się ponownie" → link do strony wydarzenia</li>
-          <li><strong>Link przycisku</strong> - {{30.data.url_event}} (nie {{2.body.url}})</li>
-        </ul>
+    <!-- === SUBCONTENT: NIP NIEPOPRAWNY === -->
+    <div class="subcontent" data-subcontent="nip-bad">
+      <div class="legend">
+        <div class="legend-item active" data-toggle="g1-nipbad" style="color: var(--accent-purple);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">Gradient 1</span>
+        </div>
+        <div class="legend-item active" data-toggle="g2-nipbad" style="color: var(--accent-cyan);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">Gradient 2</span>
+        </div>
+        <div class="legend-item active" data-toggle="img-nipbad" style="color: var(--accent-green);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">🖼️ top_banner (url)</span>
+        </div>
+        <div class="legend-item active" data-toggle="link-nipbad" style="color: var(--accent-pink);">
+          <div class="legend-checkbox"></div>
+          <span class="legend-text">🔗 Linki (href)</span>
+        </div>
       </div>
 
-      <div class="summary-card">
-        <h2>🎨 Kolory</h2>
-        
-        <h3><span class="dot" style="background: #6a1b9a;"></span> Gradient 1</h3>
-        <ul>
-          <li data-highlight="cta-button-t2">Przycisk "Zarejestruj się ponownie" <span class="var-code">background-color: {{30.data.color_gradient_1}}</span></li>
-          <li data-highlight="order-header-t2">Nagłówek "Szczegóły zamówienia" <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
-          <li data-highlight="ticket-names-t2">Nazwy biletów <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
-          <li data-highlight="billing-header-t2">Nagłówek "Dane rozliczeniowe" <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
-          <li data-highlight="email-footer-t2">Stopka (tło) <span class="var-code">background-color: {{30.data.color_gradient_1}}</span></li>
-        </ul>
+      <div class="main-layout">
+        <div class="email-wrap">
+          <div class="email-header">
+            NIP niepoprawny ⚠️
+          </div>
+          
+          <div class="email-banner" id="banner-nip-bad">
+            <span class="ann ann-img" style="top: 6px; left: 8px;" data-type="img-nipbad">src: {{30.data.event_mail_link_top_banner}}</span>
+            <span class="ann ann-link" style="bottom: 6px; left: 8px;" data-type="link-nipbad">href: {{30.data.url_event}}</span>
+            (top banner)
+          </div>
+          
+          <div class="email-body">
+            <div class="email-greeting">Cześć <strong>{{purchaser_first_name}}</strong></div>
+            <div class="email-text">
+              Dziękujemy za rejestrację na <strong>{{event_name}}</strong>. 
+              Aby potwierdzić rezerwację miejsca, wymagane jest dokonanie płatności.
+            </div>
 
-        <h3><span class="dot" style="background: #00bcd4;"></span> Gradient 2</h3>
-        <ul>
-          <li data-highlight="summary-first-t2">Linia nad "Kwota netto" <span class="var-code">border-top: {{30.data.color_gradient_2}}</span></li>
-          <li data-highlight="total-row-t2">Wiersz "Razem do zapłaty" <span class="var-code">background-color: {{30.data.color_gradient_2}}</span></li>
-        </ul>
+            <div class="email-event-info">
+              📅 {{event_day_text_1}}, {{event_time_text}}<br>
+              📍 {{event_location_place}}
+            </div>
+
+            <div style="position: relative; display: inline-block; margin-bottom: 16px;">
+              <span class="ann ann-g1" style="top: -18px; left: 0;" data-type="g1-nipbad">gradient_1</span>
+              <span class="ann ann-link" style="bottom: -18px; left: 0;" data-type="link-nipbad">href: {{2.body.url}}</span>
+              <a href="#" class="email-button g1-active" id="btn-nip-bad">Opłać rezerwację</a>
+            </div>
+
+            <div class="order-section">
+              <table class="order-table">
+                <tr><th colspan="3" class="g1-active" id="order-h-nip-bad">Szczegóły zamówienia <span class="inline-ann ann-g1" data-type="g1-nipbad">gradient_1</span></th></tr>
+                <tr>
+                  <td class="ticket-name g1-active" id="ticket-nip-bad">Bilet VIP <span class="inline-ann ann-g1" data-type="g1-nipbad">gradient_1</span></td>
+                  <td class="ticket-qty">1 × 1 499,00 zł</td>
+                  <td class="ticket-price">1 499,00 zł</td>
+                </tr>
+                <tr class="summary-row first g2-active" id="sum-nip-bad">
+                  <td colspan="2">Kwota netto <span class="inline-ann ann-g2" data-type="g2-nipbad">gradient_2</span></td>
+                  <td style="text-align: right;">1 218,70 zł</td>
+                </tr>
+                <tr class="summary-row">
+                  <td colspan="2">VAT (23%)</td>
+                  <td style="text-align: right;">280,30 zł</td>
+                </tr>
+                <tr class="total-row g2-active" id="total-nip-bad">
+                  <td colspan="2">Razem do zapłaty <span class="inline-ann ann-g2" data-type="g2-nipbad" style="background: rgba(255,255,255,0.3);">gradient_2</span></td>
+                  <td style="text-align: right;">1 499,00 zł</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="billing-section">
+              <div class="billing-header g1-active" id="bill-h-nip-bad">Dane rozliczeniowe <span class="inline-ann ann-g1" data-type="g1-nipbad">gradient_1</span></div>
+              <div class="billing-content">
+                <div class="billing-col">
+                  <strong>{{purchaser_full}}</strong>
+                  {{purchaser_email}}
+                </div>
+                <div class="billing-col">
+                  <strong>{{billing_company_name}}</strong>
+                  NIP: {{purchaser_nip}}
+                </div>
+              </div>
+            </div>
+
+            <!-- NIP NIEPOPRAWNY BOX -->
+            <div class="nip-box nip-box-warning" id="nip-box-bad">
+              <div class="nip-header">⚠️ Weryfikacja NIP</div>
+              <div class="nip-content">
+                <strong>NIP: {{purchaser_nip}}</strong> — <span style="color: #d97706;">NIEPOPRAWNY</span><br><br>
+                📄 Jeśli dokonasz płatności, faktura zostanie wystawiona na <strong>osobę fizyczną</strong>.<br><br>
+                Aby otrzymać fakturę na firmę, zarejestruj się ponownie z poprawnym NIP:
+                <br>
+                <a href="#" class="nip-button" id="nip-retry-btn">🔄 Zarejestruj się ponownie</a>
+                <span class="ann ann-link" style="position: relative; top: 0; left: 10px;" data-type="link-nipbad">href: {{30.data.url_event}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="email-footer g1-active" id="footer-nip-bad">
+            <span class="ann ann-g1" style="top: 4px; right: 8px;" data-type="g1-nipbad">gradient_1</span>
+            Masz pytania? <a href="#">{{md_email_kontakt}} <span class="inline-ann ann-link" data-type="link-nipbad">href</span></a>
+          </div>
+        </div>
+
+        <div class="sidebar">
+          <div class="summary-card diff-card">
+            <h2>⚡ Różnica vs. Osoba fizyczna</h2>
+            <ul>
+              <li><strong>Sekcja ostrzeżenia NIP</strong> — żółty alert</li>
+              <li><strong>Przycisk "Zarejestruj ponownie"</strong> → strona wydarzenia</li>
+              <li>Link przycisku: <span class="var-code">{{30.data.url_event}}</span></li>
+            </ul>
+          </div>
+
+          <div class="summary-card">
+            <h2>🔗 Dodatkowy link</h2>
+            <ul>
+              <li data-highlight="nip-retry-btn"><strong>Przycisk w ostrzeżeniu</strong> <span class="var-code">{{30.data.url_event}}</span></li>
+            </ul>
+          </div>
+
+          <div class="summary-card">
+            <h2>🎨 Kolory (bez zmian)</h2>
+            <p style="font-size: 11px; color: var(--text-muted);">Identyczne jak w wersji "Osoba fizyczna"</p>
+          </div>
+        </div>
       </div>
-
-      <div class="summary-card">
-        <h2>🖼️ Obrazy zewnętrzne (src)</h2>
-        <p class="warning">⚠️ Bez wstawienia linku obrazu, element nie pojawi się!</p>
-        <ul>
-          <li data-highlight="email-banner-t2">
-            <strong>Top banner maila</strong>
-            <span class="var-code">{{30.data.event_mail_link_top_banner}}</span>
-          </li>
-        </ul>
-      </div>
-
-      <div class="summary-card">
-        <h2>🔗 Linki do aplikacji (href)</h2>
-        <ul>
-          <li data-highlight="email-banner-t2">
-            <strong>Banner</strong> - strona wydarzenia
-            <span class="var-code">{{30.data.url_event}}</span>
-          </li>
-          <li data-highlight="cta-button-t2">
-            <strong>Przycisk "Zarejestruj się ponownie"</strong>
-            <span class="var-code">{{30.data.url_event}}</span>
-          </li>
-          <li data-highlight="email-footer-t2">
-            <strong>Email w stopce</strong>
-            <span class="var-code">mailto:{{30.data.md_email_kontakt}}</span>
-          </li>
-        </ul>
-      </div>
-
     </div>
-  </div>
 
-  </div>
+  </div><!-- /payment-link -->
 
-  <!-- TAB 3: Przypomnienie -->
-  <div class="tab-content" data-content="3">
+  <!-- ═══════════════════════════════════════════════════════════════════
+       TAB: POTWIERDZENIE PŁATNOŚCI
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="tab-content" data-content="payment-confirm">
+    <div class="legend">
+      <div class="legend-item active" data-toggle="g1-conf" style="color: var(--accent-purple);">
+        <div class="legend-checkbox"></div>
+        <span class="legend-text">Gradient 1</span>
+      </div>
+      <div class="legend-item active" data-toggle="g2-conf" style="color: var(--accent-cyan);">
+        <div class="legend-checkbox"></div>
+        <span class="legend-text">Gradient 2</span>
+      </div>
+      <div class="legend-item active" data-toggle="img-conf" style="color: var(--accent-green);">
+        <div class="legend-checkbox"></div>
+        <span class="legend-text">🖼️ top_banner (url)</span>
+      </div>
+      <div class="legend-item active" data-toggle="link-conf" style="color: var(--accent-pink);">
+        <div class="legend-checkbox"></div>
+        <span class="legend-text">🔗 Linki (href)</span>
+      </div>
+    </div>
+
     <div class="main-layout">
       <div class="email-wrap">
-        <div class="email-header">📧 Model maila - Przypomnienie</div>
-        <div class="email-banner" style="height: 70px;">
-          (top banner maila)
+        <div class="email-header">
+          Potwierdzenie płatności ✅
         </div>
+        
+        <div class="email-banner" id="banner-conf">
+          <span class="ann ann-img" style="top: 6px; left: 8px;" data-type="img-conf">src: {{11.data.event_mail_link_top_banner}}</span>
+          <span class="ann ann-link" style="bottom: 6px; left: 8px;" data-type="link-conf">href: {{11.data.url_event}}</span>
+          (top banner)
+        </div>
+        
         <div class="email-body">
+          <div class="email-greeting">
+            Cześć <strong>{{purchaser_first_name}}</strong>, 
+            <span style="color: #00bcd4;" id="success-text">płatność przebiegła pomyślnie!</span>
+            <span class="inline-ann ann-g2" data-type="g2-conf">gradient_2</span>
+          </div>
           <div class="email-text">
-            Cześć Magdalena<br>
-            <strong>Przypominamy o zbliżającym się wydarzeniu!</strong>
+            Dziękujemy za zakup biletu na <strong>{{eventName}}</strong>. 
+            Twoja rezerwacja jest potwierdzona – do zobaczenia na wydarzeniu!
           </div>
-          <div style="background: #fff3e0; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
-            📅 <strong>Za 3 dni</strong> - AMOZ Connect Warszawa
+
+          <div class="email-event-info">
+            📅 {{event_day_text_1}}, {{event_time_text}}<br>
+            📍 {{event_location_place}}, {{event_location_address}}
           </div>
-          <p style="font-size: 12px; color: #888;">Lokalizacja, agenda...</p>
+
+          <div style="position: relative; display: inline-block; margin-bottom: 16px;">
+            <span class="ann ann-g1" style="top: -18px; left: 0;" data-type="g1-conf">gradient_1</span>
+            <span class="ann ann-link" style="bottom: -18px; left: 0;" data-type="link-conf">href: {{11.data.event_location_google_link}}</span>
+            <a href="#" class="email-button g1-active" id="btn-conf">📍 Pokaż na mapie</a>
+          </div>
+
+          <div class="order-section">
+            <table class="order-table">
+              <tr><th colspan="3" class="g1-active" id="order-h-conf">Twoje bilety <span class="inline-ann ann-g1" data-type="g1-conf">gradient_1</span></th></tr>
+              <tr>
+                <td colspan="3" style="padding: 12px; color: #666; font-size: 11px;">
+                  {{9.data.html_order_table}}
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3" style="padding: 12px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #666;">
+                  💳 Płatność zrealizowana | Fakturę otrzymasz w oddzielnym mailu
+                </td>
+              </tr>
+            </table>
+          </div>
         </div>
-        <div class="email-footer" style="background: #6a1b9a; color: white;">
-          Masz pytania? eventy@medidesk.com
+
+        <div class="email-footer g1-active" id="footer-conf">
+          <span class="ann ann-g1" style="top: 4px; right: 8px;" data-type="g1-conf">gradient_1</span>
+          Masz pytania? <a href="#">{{md_email_kontakt}} <span class="inline-ann ann-link" data-type="link-conf">href</span></a>
         </div>
       </div>
+
       <div class="sidebar">
+        <div class="summary-card diff-card">
+          <h2>⚡ UWAGA: Inne zmienne!</h2>
+          <ul>
+            <li>Prefix: <strong style="color: var(--accent-orange);">{{11.data.*}}</strong> zamiast {{30.data.*}}</li>
+            <li>Imię: <strong>{{9.data.purchaser_first_name}}</strong></li>
+            <li>HTML biletów: <strong>{{9.data.html_order_table}}</strong></li>
+          </ul>
+        </div>
+
         <div class="summary-card">
-          <h2>📝 Do opracowania</h2>
-          <p style="font-size: 11px; color: #888;">Ten schemat wymaga jeszcze opracowania mapowania zmiennych.</p>
+          <h2>🎨 Kolory</h2>
+          <h3><span class="color-dot" style="background: var(--accent-purple);"></span> Gradient 1</h3>
+          <ul>
+            <li data-highlight="btn-conf"><strong>Przycisk "Pokaż na mapie"</strong> <span class="var-code">background: {{11.data.color_gradient_1}}</span></li>
+            <li data-highlight="order-h-conf"><strong>Nagłówek "Twoje bilety"</strong> <span class="var-code">color: {{11.data.color_gradient_1}}</span></li>
+            <li data-highlight="footer-conf"><strong>Stopka</strong> <span class="var-code">background: {{11.data.color_gradient_1}}</span></li>
+          </ul>
+          <h3><span class="color-dot" style="background: var(--accent-cyan);"></span> Gradient 2</h3>
+          <ul>
+            <li data-highlight="success-text"><strong>Tekst sukcesu</strong> <span class="var-code">color: {{11.data.color_gradient_2}}</span></li>
+          </ul>
+        </div>
+
+        <div class="summary-card">
+          <h2>🔗 Linki</h2>
+          <ul>
+            <li data-highlight="banner-conf"><strong>Banner</strong> <span class="var-code">{{11.data.url_event}}</span></li>
+            <li data-highlight="btn-conf"><strong>Przycisk → Google Maps</strong> <span class="var-code">{{11.data.event_location_google_link}}</span></li>
+            <li data-highlight="footer-conf"><strong>Email kontakt</strong> <span class="var-code">mailto:{{11.data.md_email_kontakt}}</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       TAB: NIEUDANA REJESTRACJA
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="tab-content" data-content="payment-failed">
+    <div class="legend">
+      <div class="legend-item active" data-toggle="g1-fail" style="color: var(--accent-purple);">
+        <div class="legend-checkbox"></div>
+        <span class="legend-text">Gradient 1</span>
+      </div>
+      <div class="legend-item active" data-toggle="g2-fail" style="color: var(--accent-cyan);">
+        <div class="legend-checkbox"></div>
+        <span class="legend-text">Gradient 2</span>
+      </div>
+      <div class="legend-item active" data-toggle="img-fail" style="color: var(--accent-green);">
+        <div class="legend-checkbox"></div>
+        <span class="legend-text">🖼️ top_banner (url)</span>
+      </div>
+      <div class="legend-item active" data-toggle="link-fail" style="color: var(--accent-pink);">
+        <div class="legend-checkbox"></div>
+        <span class="legend-text">🔗 Linki (href)</span>
+      </div>
+    </div>
+
+    <div class="main-layout">
+      <div class="email-wrap">
+        <div class="email-header">
+          Nieudana rejestracja ❌
+        </div>
+        
+        <div class="email-banner" id="banner-fail">
+          <span class="ann ann-img" style="top: 6px; left: 8px;" data-type="img-fail">src: {{30.data.event_mail_link_top_banner}}</span>
+          <span class="ann ann-link" style="bottom: 6px; left: 8px;" data-type="link-fail">href: {{30.data.url_event}}</span>
+          (top banner)
+        </div>
+        
+        <div class="email-body">
+          <div class="email-greeting">Cześć <strong>{{purchaser_first_name}}</strong></div>
+          
+          <!-- KOMUNIKAT BŁĘDU -->
+          <div class="email-alert email-alert-error">
+            <strong>⚠️ Niestety Twoja rejestracja na {{event_name}} nie powiodła się.</strong><br>
+            Sprawdź czy poniższy formularz nie zawiera błędów i spróbuj zarejestrować się ponownie.
+          </div>
+
+          <div class="email-event-info">
+            📅 {{event_day_text_1}}, {{event_time_text}}<br>
+            📍 {{event_location_place}}
+          </div>
+
+          <div style="position: relative; display: inline-block; margin-bottom: 16px;">
+            <span class="ann ann-g1" style="top: -18px; left: 0;" data-type="g1-fail">gradient_1</span>
+            <span class="ann ann-link" style="bottom: -18px; left: 0;" data-type="link-fail">href: {{30.data.url_event}}</span>
+            <a href="#" class="email-button g1-active" id="btn-fail">Zarejestruj się ponownie</a>
+          </div>
+
+          <div class="order-section">
+            <table class="order-table">
+              <tr><th colspan="3" class="g1-active" id="order-h-fail">Szczegóły zamówienia <span class="inline-ann ann-g1" data-type="g1-fail">gradient_1</span></th></tr>
+              <tr>
+                <td class="ticket-name g1-active" id="ticket-fail">Bilet Standard <span class="inline-ann ann-g1" data-type="g1-fail">gradient_1</span></td>
+                <td class="ticket-qty">1 × 399,00 zł</td>
+                <td class="ticket-price">399,00 zł</td>
+              </tr>
+              <tr class="summary-row first g2-active" id="sum-fail">
+                <td colspan="2">Kwota netto <span class="inline-ann ann-g2" data-type="g2-fail">gradient_2</span></td>
+                <td style="text-align: right;">324,39 zł</td>
+              </tr>
+              <tr class="summary-row">
+                <td colspan="2">VAT (23%)</td>
+                <td style="text-align: right;">74,61 zł</td>
+              </tr>
+              <tr class="total-row g2-active" id="total-fail">
+                <td colspan="2">Razem do zapłaty <span class="inline-ann ann-g2" data-type="g2-fail" style="background: rgba(255,255,255,0.3);">gradient_2</span></td>
+                <td style="text-align: right;">399,00 zł</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="billing-section">
+            <div class="billing-header g1-active" id="bill-h-fail">Dane rozliczeniowe <span class="inline-ann ann-g1" data-type="g1-fail">gradient_1</span></div>
+            <div class="billing-content">
+              <div class="billing-col">
+                <strong>{{purchaser_full}}</strong>
+                {{purchaser_email}}
+              </div>
+              <div class="billing-col">
+                <strong>{{billing_company_name}}</strong>
+                NIP: {{purchaser_nip}}
+              </div>
+            </div>
+          </div>
+
+          <!-- KONTAKT TECHNICZNY -->
+          <div class="tech-support-box" id="tech-box">
+            <strong>🛠️ Potrzebujesz pomocy technicznej?</strong><br>
+            📧 <a href="#">{{30.data.md_email_techniczny}}</a>
+            &nbsp;|&nbsp;
+            📞 <a href="#">{{30.data.md_mobile_techniczny}}</a>
+          </div>
+        </div>
+
+        <div class="email-footer g1-active" id="footer-fail">
+          <span class="ann ann-g1" style="top: 4px; right: 8px;" data-type="g1-fail">gradient_1</span>
+          Masz pytania? <a href="#">{{md_email_kontakt}} <span class="inline-ann ann-link" data-type="link-fail">href</span></a>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <div class="summary-card diff-card">
+          <h2>⚡ Różnice vs. Link do płatności</h2>
+          <ul>
+            <li><strong>Komunikat błędu</strong> — czerwony alert</li>
+            <li><strong>Przycisk CTA</strong> → "Zarejestruj się ponownie"</li>
+            <li><strong>Link przycisku:</strong> <span class="var-code">{{30.data.url_event}}</span></li>
+            <li><strong>Sekcja kontaktu technicznego</strong> — nowa!</li>
+          </ul>
+        </div>
+
+        <div class="summary-card">
+          <h2>🆕 Nowe zmienne</h2>
+          <ul>
+            <li data-highlight="tech-box"><strong>Email techniczny</strong> <span class="var-code">{{30.data.md_email_techniczny}}</span></li>
+            <li data-highlight="tech-box"><strong>Telefon techniczny</strong> <span class="var-code">{{30.data.md_mobile_techniczny}}</span></li>
+          </ul>
+        </div>
+
+        <div class="summary-card">
+          <h2>🔗 Linki</h2>
+          <ul>
+            <li data-highlight="banner-fail"><strong>Banner</strong> <span class="var-code">{{30.data.url_event}}</span></li>
+            <li data-highlight="btn-fail"><strong>Przycisk ponownej rejestracji</strong> <span class="var-code">{{30.data.url_event}}</span></li>
+            <li data-highlight="tech-box"><strong>Email techniczny</strong> <span class="var-code">mailto:{{30.data.md_email_techniczny}}</span></li>
+            <li data-highlight="tech-box"><strong>Telefon techniczny</strong> <span class="var-code">tel:{{30.data.md_mobile_techniczny}}</span></li>
+          </ul>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const state = { g1: true, g2: true, link: true, img: true };
+    // ═══════════════════════════════════════════════════════════════════
+    // OBSŁUGA ZAKŁADEK GŁÓWNYCH
+    // ═══════════════════════════════════════════════════════════════════
+    const mainTabs = document.querySelectorAll('.tab-main');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const subtabsContainers = document.querySelectorAll('.subtabs-container');
 
-    const legendItems = document.querySelectorAll('.legend-item');
-    const annotations = document.querySelectorAll('.annotation, .inline-annotation');
-
-    const g1Elements = {
-      button: document.getElementById('cta-button'),
-      orderHeader: document.getElementById('order-header'),
-      billingHeader: document.getElementById('billing-header'),
-      footer: document.getElementById('email-footer'),
-      ticketNames: document.querySelectorAll('[data-g1-text]')
-    };
-
-    const g2Elements = {
-      summaryFirst: document.getElementById('summary-first'),
-      totalRow: document.getElementById('total-row')
-    };
-
-    const bannerElement = document.getElementById('email-banner');
-
-    function updateView() {
-      annotations.forEach(ann => {
-        const type = ann.dataset.type;
-        if (type && state[type] !== undefined) {
-          ann.classList.toggle('hidden', !state[type]);
+    mainTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabId = tab.dataset.tab;
+        
+        mainTabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+        subtabsContainers.forEach(s => s.classList.remove('visible'));
+        
+        tab.classList.add('active');
+        document.querySelector(`[data-content="${tabId}"]`).classList.add('active');
+        
+        // Pokaż sub-zakładki dla "payment-link"
+        if (tabId === 'payment-link') {
+          document.getElementById('subtabs-payment-link').classList.add('visible');
         }
       });
-
-      if (g1Elements.button) {
-        g1Elements.button.classList.toggle('show-g1', state.g1);
-        g1Elements.button.classList.toggle('hide-g1', !state.g1);
-      }
-      if (g1Elements.orderHeader) {
-        g1Elements.orderHeader.classList.toggle('show-g1', state.g1);
-        g1Elements.orderHeader.classList.toggle('hide-g1', !state.g1);
-      }
-      if (g1Elements.billingHeader) {
-        g1Elements.billingHeader.classList.toggle('show-g1', state.g1);
-        g1Elements.billingHeader.classList.toggle('hide-g1', !state.g1);
-      }
-      if (g1Elements.footer) {
-        g1Elements.footer.classList.toggle('show-g1', state.g1);
-        g1Elements.footer.classList.toggle('hide-g1', !state.g1);
-      }
-      g1Elements.ticketNames.forEach(el => {
-        el.classList.toggle('show-g1', state.g1);
-        el.classList.toggle('hide-g1', !state.g1);
-      });
-
-      if (g2Elements.summaryFirst) {
-        g2Elements.summaryFirst.classList.toggle('show-g2', state.g2);
-        g2Elements.summaryFirst.classList.toggle('hide-g2', !state.g2);
-      }
-      if (g2Elements.totalRow) {
-        g2Elements.totalRow.classList.toggle('show-g2', state.g2);
-        g2Elements.totalRow.classList.toggle('hide-g2', !state.g2);
-      }
-
-      if (bannerElement) {
-        bannerElement.classList.toggle('hidden', !state.img);
-      }
-    }
-
-    legendItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const toggle = item.dataset.toggle;
-        state[toggle] = !state[toggle];
-        item.classList.toggle('active', state[toggle]);
-        updateView();
-      });
     });
 
-    updateView();
+    // ═══════════════════════════════════════════════════════════════════
+    // OBSŁUGA SUB-ZAKŁADEK
+    // ═══════════════════════════════════════════════════════════════════
+    const subtabs = document.querySelectorAll('.subtab');
+    const subcontents = document.querySelectorAll('.subcontent');
 
-    // Obsługa kart/zakładek
-    const tabs = document.querySelectorAll('.tab');
-    const tabContents = document.querySelectorAll('.tab-content');
-
-    tabs.forEach(tab => {
+    subtabs.forEach(tab => {
       tab.addEventListener('click', () => {
-        const tabNum = tab.dataset.tab;
+        const subtabId = tab.dataset.subtab;
         
-        // Usuń active ze wszystkich
-        tabs.forEach(t => t.classList.remove('active'));
-        tabContents.forEach(c => c.classList.remove('active'));
+        subtabs.forEach(t => t.classList.remove('active'));
+        subcontents.forEach(c => c.classList.remove('active'));
         
-        // Dodaj active do wybranego
         tab.classList.add('active');
-        document.querySelector(`[data-content="${tabNum}"]`).classList.add('active');
+        document.querySelector(`[data-subcontent="${subtabId}"]`).classList.add('active');
       });
     });
 
-    // Obsługa legend dla wszystkich zakładek
+    // ═══════════════════════════════════════════════════════════════════
+    // OBSŁUGA LEGEND (CHECKBOXÓW)
+    // ═══════════════════════════════════════════════════════════════════
     document.querySelectorAll('.legend-item').forEach(item => {
       item.addEventListener('click', () => {
         const toggle = item.dataset.toggle;
         item.classList.toggle('active');
-        
         const isActive = item.classList.contains('active');
         
         // Ukryj/pokaż annotacje
@@ -1027,44 +1578,91 @@
           ann.classList.toggle('hidden', !isActive);
         });
         
-        // Obsługa bannerów
-        if (toggle === 'img-t2') {
-          const banner = document.getElementById('email-banner-t2');
-          if (banner) banner.classList.toggle('hidden', !isActive);
+        // === OBRAZY: ukrywa banner ===
+        if (toggle.startsWith('img')) {
+          let bannerId;
+          if (toggle === 'img') bannerId = 'banner-personal';
+          else if (toggle === 'img-nip') bannerId = 'banner-nip-ok';
+          else if (toggle === 'img-nipbad') bannerId = 'banner-nip-bad';
+          else if (toggle === 'img-conf') bannerId = 'banner-conf';
+          else if (toggle === 'img-fail') bannerId = 'banner-fail';
+          
+          if (bannerId) {
+            document.getElementById(bannerId)?.classList.toggle('hidden', !isActive);
+          }
         }
-        if (toggle === 'img-t3') {
-          const banner = document.getElementById('email-banner-t3');
-          if (banner) banner.classList.toggle('hidden', !isActive);
+        
+        // === GRADIENT 1: wyszarza elementy ===
+        if (toggle.startsWith('g1')) {
+          let suffix = '';
+          if (toggle === 'g1') suffix = '-personal';
+          else if (toggle === 'g1-nip') suffix = '-nip-ok';
+          else if (toggle === 'g1-nipbad') suffix = '-nip-bad';
+          else if (toggle === 'g1-conf') suffix = '-conf';
+          else if (toggle === 'g1-fail') suffix = '-fail';
+          
+          // Elementy G1
+          const g1Elements = [
+            `btn${suffix}`, `order-h${suffix}`, `ticket${suffix}`, 
+            `bill-h${suffix}`, `footer${suffix}`
+          ];
+          
+          g1Elements.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+              el.classList.toggle('g1-active', isActive);
+              el.classList.toggle('g1-inactive', !isActive);
+            }
+          });
+        }
+        
+        // === GRADIENT 2: wyszarza elementy ===
+        if (toggle.startsWith('g2')) {
+          let suffix = '';
+          if (toggle === 'g2') suffix = '-personal';
+          else if (toggle === 'g2-nip') suffix = '-nip-ok';
+          else if (toggle === 'g2-nipbad') suffix = '-nip-bad';
+          else if (toggle === 'g2-conf') suffix = '-conf';
+          else if (toggle === 'g2-fail') suffix = '-fail';
+          
+          // Elementy G2
+          const g2Elements = [`sum${suffix}`, `total${suffix}`];
+          
+          g2Elements.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+              el.classList.toggle('g2-active', isActive);
+              el.classList.toggle('g2-inactive', !isActive);
+            }
+          });
+          
+          // Specjalny przypadek: tekst sukcesu w potwierdzeniu
+          if (toggle === 'g2-conf') {
+            const successText = document.getElementById('success-text');
+            if (successText) {
+              successText.style.color = isActive ? '#00bcd4' : '#999';
+            }
+          }
         }
       });
     });
 
-    // Highlight przy najechaniu na podsumowanie
-    function setupHighlights() {
-      const highlightItems = document.querySelectorAll('[data-highlight]');
+    // ═══════════════════════════════════════════════════════════════════
+    // HIGHLIGHT (MIGANIE) PRZY NAJECHANIU
+    // ═══════════════════════════════════════════════════════════════════
+    document.querySelectorAll('[data-highlight]').forEach(item => {
+      item.style.cursor = 'pointer';
       
-      highlightItems.forEach(item => {
-        item.style.cursor = 'pointer';
-        
-        item.addEventListener('mouseenter', () => {
-          const targetId = item.dataset.highlight;
-          const targetEl = document.getElementById(targetId);
-          if (targetEl) {
-            targetEl.classList.add('blinking');
-          }
-        });
-
-        item.addEventListener('mouseleave', () => {
-          const targetId = item.dataset.highlight;
-          const targetEl = document.getElementById(targetId);
-          if (targetEl) {
-            targetEl.classList.remove('blinking');
-          }
-        });
+      item.addEventListener('mouseenter', () => {
+        const targetId = item.dataset.highlight;
+        document.getElementById(targetId)?.classList.add('blinking');
       });
-    }
-    
-    setupHighlights();
+
+      item.addEventListener('mouseleave', () => {
+        const targetId = item.dataset.highlight;
+        document.getElementById(targetId)?.classList.remove('blinking');
+      });
+    });
   </script>
 </body>
 </html>
