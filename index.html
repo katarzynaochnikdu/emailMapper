@@ -2,796 +2,1069 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Email Mapper - Mapa Elementów Emaila</title>
+  <title>Email Mapper - Mapa Kolorów i Linków</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
     
     body {
-      margin: 0;
-      padding: 20px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f0f0;
       min-height: 100vh;
+      padding: 20px;
     }
 
-    .container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    header {
-      background: white;
-      padding: 24px 32px;
-      border-radius: 12px;
+    .header {
+      text-align: center;
       margin-bottom: 20px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     }
 
-    header h1 {
-      margin: 0 0 8px 0;
-      color: #6a1b9a;
-      font-size: 32px;
+    .header h1 {
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 8px;
     }
 
-    header p {
-      margin: 0;
-      color: #666;
-      font-size: 16px;
+    .header p {
+      color: #888;
+      font-size: 14px;
     }
 
-    .legend {
-      background: rgba(255,255,255,0.95);
-      padding: 16px;
-      border-radius: 8px;
-      margin-bottom: 20px;
+    /* Karty/zakładki */
+    .tabs-container {
+      max-width: 760px;
+      margin: 0 auto 20px auto;
+    }
+
+    .tabs {
       display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
+      gap: 4px;
+      background: white;
+      padding: 6px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .tab {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500;
+      color: #666;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab:hover {
+      background: #f5f5f5;
+    }
+
+    .tab.active {
+      background: #6a1b9a;
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Legenda z przełącznikami */
+    .legend {
+      display: flex;
       justify-content: center;
-      align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding: 16px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
     }
 
     .legend-item {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 14px;
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+      user-select: none;
     }
 
-    .legend-color {
-      width: 24px;
-      height: 24px;
+    .legend-item:hover {
+      background: #f5f5f5;
+    }
+
+    .legend-checkbox {
+      width: 22px;
+      height: 22px;
       border-radius: 4px;
-      border: 2px solid white;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      border: 2px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      transition: all 0.2s;
+      flex-shrink: 0;
     }
 
+    .legend-item.active .legend-checkbox {
+      border-color: currentColor;
+    }
+
+    .legend-item[data-toggle="g1"].active .legend-checkbox {
+      background: #6a1b9a;
+      border-color: #6a1b9a;
+    }
+
+    .legend-item[data-toggle="g2"].active .legend-checkbox {
+      background: #00bcd4;
+      border-color: #00bcd4;
+    }
+
+    .legend-item[data-toggle="link"].active .legend-checkbox {
+      background: #e91e63;
+      border-color: #e91e63;
+    }
+
+    .legend-item[data-toggle="img"].active .legend-checkbox,
+    .legend-item[data-toggle="img-t2"].active .legend-checkbox,
+    .legend-item[data-toggle="img-t3"].active .legend-checkbox {
+      background: #4caf50;
+      border-color: #4caf50;
+    }
+
+    .legend-item[data-toggle="g1-t2"].active .legend-checkbox,
+    .legend-item[data-toggle="g1-t3"].active .legend-checkbox {
+      background: #6a1b9a;
+      border-color: #6a1b9a;
+    }
+
+    .legend-item[data-toggle="g2-t2"].active .legend-checkbox,
+    .legend-item[data-toggle="g2-t3"].active .legend-checkbox {
+      background: #00bcd4;
+      border-color: #00bcd4;
+    }
+
+    .legend-item[data-toggle="link-t2"].active .legend-checkbox,
+    .legend-item[data-toggle="link-t3"].active .legend-checkbox {
+      background: #e91e63;
+      border-color: #e91e63;
+    }
+
+    .legend-item.active .legend-checkbox::before {
+      content: '✓';
+      color: white;
+      font-weight: bold;
+    }
+
+    .legend-text {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    /* Main layout - 2 kolumny */
     .main-layout {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      grid-template-columns: 440px 280px;
+      gap: 24px;
+      max-width: 760px;
+      margin: 0 auto;
       align-items: start;
     }
 
-    .email-preview {
+    /* Email Preview - lewa kolumna */
+    .email-wrap {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      overflow: hidden;
       position: sticky;
       top: 20px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.15);
-      overflow: hidden;
     }
 
-    .email-preview-header {
-      background: #f8f9fa;
-      padding: 12px 20px;
-      border-bottom: 2px solid #e0e0e0;
-      font-size: 13px;
-      color: #666;
-      font-weight: 600;
-    }
-
-    .email-content {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .mapping-sections {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .mapping-card {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-      border: 3px solid transparent;
-    }
-
-    .mapping-card.active {
-      border-color: #6a1b9a;
-      box-shadow: 0 8px 24px rgba(106,27,154,0.3);
-      transform: translateX(-5px);
-    }
-
-    .mapping-card h3 {
-      margin: 0 0 4px 0;
-      color: #6a1b9a;
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 700;
-    }
-
-    .mapping-card h2 {
-      margin: 0 0 16px 0;
-      color: #333;
-      font-size: 20px;
-    }
-
-    .variable-list {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .variable-item {
-      background: #f8f9fa;
-      padding: 12px;
-      border-radius: 6px;
-      border-left: 4px solid #6a1b9a;
-    }
-
-    .variable-label {
+    .email-header {
+      background: #f8f8f8;
+      padding: 10px 16px;
       font-size: 12px;
-      color: #666;
-      margin-bottom: 4px;
-      font-weight: 600;
+      color: #999;
+      border-bottom: 1px solid #eee;
     }
 
-    .variable-code {
-      font-family: 'Consolas', 'Monaco', monospace;
-      font-size: 13px;
-      color: #d32f2f;
-      background: white;
-      padding: 6px 8px;
-      border-radius: 4px;
-      display: inline-block;
-      word-break: break-all;
-    }
-
-    .color-indicator {
-      display: inline-block;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 11px;
-      font-weight: 600;
-      margin-left: 8px;
-    }
-
-    /* Email sections */
-    .email-section {
-      transition: all 0.3s ease;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .email-section::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(106,27,154,0.1);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .email-section:hover::before,
-    .email-section.active::before {
-      opacity: 1;
-    }
-
-    .email-section.active {
-      outline: 3px solid #6a1b9a;
-      outline-offset: -3px;
-    }
-
-    .section-number {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      background: #6a1b9a;
-      color: white;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      z-index: 2;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-
-    /* Email styles */
     .email-banner {
-      position: relative;
+      height: 100px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      height: 180px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 18px;
-      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .email-banner.hidden {
+      display: none;
     }
 
     .email-body {
-      padding: 24px;
-    }
-
-    .email-greeting {
-      font-size: 22px;
-      font-weight: 700;
-      color: #333;
-      margin-bottom: 16px;
+      padding: 20px;
     }
 
     .email-text {
-      color: #555;
-      line-height: 1.6;
+      color: #888;
+      font-size: 14px;
+      line-height: 1.5;
       margin-bottom: 16px;
-    }
-
-    .email-info {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin-bottom: 12px;
-      color: #555;
-    }
-
-    .email-info-icon {
-      font-size: 18px;
     }
 
     .email-button {
       display: inline-block;
-      background: #6a1b9a;
-      color: white;
-      padding: 14px 28px;
-      border-radius: 8px;
+      padding: 12px 24px;
+      border-radius: 6px;
       text-decoration: none;
-      font-weight: 700;
-      margin-top: 16px;
-      transition: background 0.3s;
+      font-weight: 600;
+      font-size: 14px;
+      position: relative;
+      transition: all 0.3s;
     }
 
-    .email-button:hover {
-      background: #7b1fa2;
+    .email-button.show-g1 {
+      background: #6a1b9a;
+      color: white;
+    }
+
+    .email-button.hide-g1 {
+      background: #e0e0e0;
+      color: #999;
+    }
+
+    .order-section {
+      margin-top: 20px;
+      border: 1px solid #D0D9DF;
+      overflow: hidden;
     }
 
     .order-table {
       width: 100%;
       border-collapse: collapse;
-      border: 1px solid #D0D9DF;
-      margin-bottom: 16px;
+      font-size: 13px;
     }
 
     .order-table th {
-      background: white;
-      color: #6a1b9a;
-      padding: 12px;
       text-align: left;
-      font-size: 16px;
-      border-bottom: 2px solid #D0D9DF;
+      padding: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: color 0.3s;
     }
 
+    .order-table th.show-g1 { color: #6a1b9a; }
+    .order-table th.hide-g1 { color: #999; }
+
     .order-table td {
-      padding: 12px;
-      border-bottom: 1px solid #e0e0e0;
+      padding: 6px 8px;
     }
 
     .order-table .ticket-name {
-      color: #6a1b9a;
-      font-weight: 700;
+      font-weight: 600;
+      transition: color 0.3s;
     }
 
-    .order-summary-row {
+    .order-table .ticket-name.show-g1 { color: #6a1b9a; }
+    .order-table .ticket-name.hide-g1 { color: #999; }
+
+    .order-table .ticket-qty {
+      text-align: center;
+      color: #666;
+    }
+
+    .order-table .ticket-price {
+      text-align: right;
+      font-weight: 600;
+    }
+
+    .order-table .summary-row td {
+      padding: 4px 6px;
       background: #F8F9FA;
     }
 
-    .order-total-row {
-      background: #00bcd4;
+    .order-table .summary-row.first.show-g2 td {
+      border-top: 2px solid #00bcd4;
+    }
+
+    .order-table .summary-row.first.hide-g2 td {
+      border-top: 2px solid #ddd;
+    }
+
+    .order-table .total-row td {
+      padding: 8px;
+      font-weight: 600;
+      font-size: 15px;
       color: white;
-      font-weight: 700;
-      font-size: 16px;
+      transition: background-color 0.3s;
     }
 
-    .order-total-row td {
-      border-bottom: none;
-    }
+    .order-table .total-row.show-g2 td { background: #00bcd4; }
+    .order-table .total-row.hide-g2 td { background: #999; }
 
-    .billing-table {
-      width: 100%;
-      border-collapse: collapse;
+    .billing-section {
+      margin-top: 20px;
       border: 1px solid #D0D9DF;
-      margin-bottom: 16px;
     }
 
-    .billing-table th {
-      background: white;
-      color: #6a1b9a;
-      padding: 12px;
-      text-align: left;
-      font-size: 16px;
-      border-bottom: 2px solid #D0D9DF;
+    .billing-header {
+      padding: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: color 0.3s;
     }
 
-    .billing-table td {
-      padding: 12px;
-      vertical-align: top;
-      width: 50%;
+    .billing-header.show-g1 { color: #6a1b9a; }
+    .billing-header.hide-g1 { color: #999; }
+
+    .billing-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      font-size: 13px;
+    }
+
+    .billing-col {
+      padding: 8px;
       border-right: 1px solid #D0D9DF;
     }
 
-    .billing-table td:last-child {
+    .billing-col:last-child {
       border-right: none;
     }
 
+    .billing-col strong {
+      display: block;
+      margin-bottom: 2px;
+    }
+
     .email-footer {
+      padding: 12px 20px;
+      text-align: center;
+      font-size: 13px;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .email-footer.show-g1 {
       background: #6a1b9a;
       color: white;
-      padding: 24px;
-      text-align: center;
+    }
+
+    .email-footer.hide-g1 {
+      background: #e0e0e0;
+      color: #666;
     }
 
     .email-footer a {
-      color: white;
       text-decoration: underline;
     }
 
-    @media (max-width: 1200px) {
+    .email-footer.show-g1 a { color: white; }
+    .email-footer.hide-g1 a { color: #666; }
+
+    /* Annotations */
+    .annotation {
+      font-size: 9px;
+      padding: 2px 5px;
+      border-radius: 3px;
+      color: white;
+      position: absolute;
+      white-space: nowrap;
+      z-index: 20;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .annotation.hidden { opacity: 0; }
+    .annotation-g1 { background: #6a1b9a; }
+    .annotation-g2 { background: #00bcd4; }
+    .annotation-link { background: #e91e63; }
+    .annotation-img { background: #4caf50; }
+
+    .inline-annotation {
+      font-size: 8px;
+      padding: 1px 4px;
+      border-radius: 2px;
+      color: white;
+      margin-left: 4px;
+      white-space: nowrap;
+      transition: opacity 0.3s;
+    }
+
+    .inline-annotation.hidden { opacity: 0; }
+
+    /* Miganie elementu */
+    @keyframes blink {
+      0%, 100% { outline: 3px solid transparent; }
+      50% { outline: 3px solid #ff5722; outline-offset: 2px; }
+    }
+
+    .blinking {
+      animation: blink 0.5s ease-in-out infinite;
+    }
+
+    /* Prawa kolumna - podsumowanie */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .summary-card {
+      background: white;
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .summary-card h2 {
+      font-size: 13px;
+      margin-bottom: 10px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .summary-card h2 .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+    }
+
+    .summary-card h3 {
+      font-size: 11px;
+      color: #666;
+      margin: 10px 0 6px 0;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .summary-card h3 .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+    }
+
+    .summary-card ul {
+      list-style: none;
+      font-size: 11px;
+      color: #555;
+    }
+
+    .summary-card li {
+      padding: 3px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .summary-card li:last-child {
+      border-bottom: none;
+    }
+
+    .var-code {
+      display: block;
+      font-family: 'Consolas', monospace;
+      font-size: 9px;
+      color: #999;
+      margin-top: 1px;
+      word-break: break-all;
+    }
+
+    .warning {
+      color: #e53935;
+      font-weight: 600;
+      font-size: 10px;
+      margin-bottom: 6px;
+    }
+
+    @media (max-width: 900px) {
       .main-layout {
         grid-template-columns: 1fr;
       }
-
-      .email-preview {
+      .email-wrap {
         position: relative;
         top: 0;
       }
     }
-
-    .code-snippet {
-      background: #2d2d2d;
-      color: #f8f8f2;
-      padding: 16px;
-      border-radius: 6px;
-      margin-top: 12px;
-      font-family: 'Consolas', 'Monaco', monospace;
-      font-size: 12px;
-      overflow-x: auto;
-      line-height: 1.5;
-    }
-
-    .code-snippet .keyword {
-      color: #66d9ef;
-    }
-
-    .code-snippet .string {
-      color: #a6e22e;
-    }
-
-    .code-snippet .variable {
-      color: #fd971f;
-    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>📧 Email Mapper</h1>
-      <p>Mapa elementów emaila potwierdzającego rejestrację na wydarzenie. Najedź na sekcję, aby zobaczyć szczegóły mapowania.</p>
-    </header>
+  <div class="header">
+    <h1>🎨 Mapa Kolorów i Linków</h1>
+    <p>Kliknij element w legendzie, aby go włączyć/wyłączyć</p>
+  </div>
 
-    <div class="legend">
-      <div class="legend-item">
-        <div class="legend-color" style="background: #6a1b9a;"></div>
-        <span><strong>{{30.data.color_gradient_1}}</strong> - Kolor główny (fiolet)</span>
+  <!-- KARTY SCHEMATÓW -->
+  <div class="tabs-container">
+    <div class="tabs">
+      <button class="tab active" data-tab="1">📧 Potwierdzenie rejestracji</button>
+      <button class="tab" data-tab="2">⚠️ Problem z płatnością</button>
+      <button class="tab" data-tab="3">📅 Przypomnienie</button>
+    </div>
+  </div>
+
+  <!-- TAB 1: Potwierdzenie rejestracji -->
+  <div class="tab-content active" data-content="1">
+
+  <!-- LEGENDA -->
+  <div class="legend">
+    <div class="legend-item active" data-toggle="g1" style="color: #6a1b9a;">
+      <div class="legend-checkbox"></div>
+      <span class="legend-text">Gradient 1</span>
+    </div>
+    <div class="legend-item active" data-toggle="g2" style="color: #00bcd4;">
+      <div class="legend-checkbox"></div>
+      <span class="legend-text">Gradient 2</span>
+    </div>
+    <div class="legend-item active" data-toggle="img" style="color: #4caf50;">
+      <div class="legend-checkbox"></div>
+      <span class="legend-text">🖼️ Obrazy (src)</span>
+    </div>
+    <div class="legend-item active" data-toggle="link" style="color: #e91e63;">
+      <div class="legend-checkbox"></div>
+      <span class="legend-text">🔗 Linki (href)</span>
+    </div>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="main-layout">
+    
+    <!-- LEWA KOLUMNA - EMAIL -->
+    <div class="email-wrap">
+      <div class="email-header">📧 Model maila</div>
+      
+      <div class="email-banner" id="email-banner" title="🖼️ OBRAZEK: {{30.data.event_mail_link_top_banner}}&#10;🔗 LINK: {{30.data.url_event}}">
+        <span class="annotation annotation-img" style="top: -16px; left: 8px; font-size: 8px;" data-type="img">🖼️ src: {{30.data.event_mail_link_top_banner}}</span>
+        <span class="annotation annotation-link" style="bottom: 4px; left: 8px; font-size: 8px;" data-type="link">🔗 href: {{30.data.url_event}}</span>
+        (top banner maila)
       </div>
-      <div class="legend-item">
-        <div class="legend-color" style="background: #00bcd4;"></div>
-        <span><strong>{{30.data.color_gradient_2}}</strong> - Kolor akcentu (turkus)</span>
+      
+      <div class="email-body">
+        <div class="email-text">
+          Cześć Magdalena<br>
+          Dziękujemy za rejestrację...
+        </div>
+
+        <div style="position: relative; display: inline-block; margin-bottom: 16px;">
+          <span class="annotation annotation-g1" style="top: -16px; left: 0;" data-type="g1">tło</span>
+          <span class="annotation annotation-link" style="bottom: -16px; left: 0;" data-type="link">🔗 href</span>
+          <a href="#" class="email-button show-g1" id="cta-button" title="🎨 TŁO: {{30.data.color_gradient_1}}&#10;🔗 LINK: {{2.body.url}}">Opłać rezerwację</a>
+        </div>
+
+        <div class="order-section">
+          <table class="order-table">
+            <tr>
+              <th colspan="3" class="show-g1" id="order-header" title="🎨 KOLOR: {{30.data.color_gradient_1}}">
+                Szczegóły zamówienia
+                <span class="inline-annotation annotation-g1" data-type="g1">kolor</span>
+              </th>
+            </tr>
+            <tr id="ticket-names">
+              <td class="ticket-name show-g1" data-g1-text>
+                Bilet Connect
+                <span class="inline-annotation annotation-g1" data-type="g1">kolor</span>
+              </td>
+              <td class="ticket-qty">1 szt. × 567,00 zł</td>
+              <td class="ticket-price">567,00 zł</td>
+            </tr>
+            <tr>
+              <td class="ticket-name show-g1" data-g1-text>*Bilet Connect +</td>
+              <td class="ticket-qty">3 szt. × 399,00 zł</td>
+              <td class="ticket-price">1 197,00 zł</td>
+            </tr>
+            <tr class="summary-row first show-g2" id="summary-first">
+              <td colspan="2">
+                Kwota netto
+                <span class="inline-annotation annotation-g2" data-type="g2">border</span>
+              </td>
+              <td style="text-align: right;">1 764,00 zł</td>
+            </tr>
+            <tr class="summary-row">
+              <td colspan="2">VAT (23%)</td>
+              <td style="text-align: right;">405,72 zł</td>
+            </tr>
+            <tr class="total-row show-g2" id="total-row">
+              <td colspan="2">
+                Razem do zapłaty
+                <span class="inline-annotation annotation-g2" data-type="g2" style="background: rgba(255,255,255,0.3);">tło</span>
+              </td>
+              <td style="text-align: right;">2 169,72 zł</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="billing-section">
+          <div class="billing-header show-g1" id="billing-header">
+            Dane rozliczeniowe
+            <span class="inline-annotation annotation-g1" data-type="g1">kolor</span>
+          </div>
+          <div class="billing-content">
+            <div class="billing-col">
+              <strong>Magdalena Kapusta</strong>
+              tescionweb2@digitalunity.pl<br>
+              +48888469553
+            </div>
+            <div class="billing-col">
+              <strong>Katarzyna Ochnik DIGITAL UNITY</strong>
+              Bluszczańska 74/58<br>
+              NIP: 9710668048
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="legend-item">
-        <span>🖼️ <strong>Obrazki</strong> - Grafiki (src)</span>
-      </div>
-      <div class="legend-item">
-        <span>🔗 <strong>Linki</strong> - Odnośniki (href)</span>
+
+      <div class="email-footer show-g1" id="email-footer">
+        <span class="annotation annotation-g1" style="top: 2px; right: 8px;" data-type="g1">tło</span>
+        Masz pytania? 
+        <a href="#">
+          eventy@medidesk.com
+          <span class="inline-annotation annotation-link" data-type="link">🔗</span>
+        </a>
       </div>
     </div>
 
-    <div class="main-layout">
-      <!-- LEWY PANEL - PODGLĄD EMAILA -->
-      <div class="email-preview">
-        <div class="email-preview-header">
-          📧 Podgląd emaila
+    <!-- PRAWA KOLUMNA - PODSUMOWANIE -->
+    <div class="sidebar">
+      
+      <!-- KOLORY -->
+      <div class="summary-card">
+        <h2>🎨 Kolory</h2>
+        
+        <h3><span class="dot" style="background: #6a1b9a;"></span> Gradient 1</h3>
+        <ul>
+          <li data-highlight="cta-button">Przycisk "Opłać rezerwację" <span class="var-code">background-color: {{30.data.color_gradient_1}}</span></li>
+          <li data-highlight="order-header">Nagłówek "Szczegóły zamówienia" <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
+          <li data-highlight="ticket-names">Nazwy biletów <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
+          <li data-highlight="billing-header">Nagłówek "Dane rozliczeniowe" <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
+          <li data-highlight="email-footer">Stopka (tło) <span class="var-code">background-color: {{30.data.color_gradient_1}}</span></li>
+        </ul>
+
+        <h3><span class="dot" style="background: #00bcd4;"></span> Gradient 2</h3>
+        <ul>
+          <li data-highlight="summary-first">Linia nad "Kwota netto" <span class="var-code">border-top: {{30.data.color_gradient_2}}</span></li>
+          <li data-highlight="total-row">Wiersz "Razem do zapłaty" <span class="var-code">background-color: {{30.data.color_gradient_2}}</span></li>
+        </ul>
+      </div>
+
+      <!-- OBRAZY -->
+      <div class="summary-card">
+        <h2>🖼️ Obrazy zewnętrzne (src)</h2>
+        <p class="warning">⚠️ Bez wstawienia linku obrazu, element nie pojawi się!</p>
+        <ul>
+          <li data-highlight="email-banner">
+            <strong>Top banner maila</strong>
+            <span class="var-code">{{30.data.event_mail_link_top_banner}}</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- LINKI -->
+      <div class="summary-card">
+        <h2>🔗 Linki do aplikacji (href)</h2>
+        <ul>
+          <li data-highlight="email-banner">
+            <strong>Banner</strong> - strona wydarzenia
+            <span class="var-code">{{30.data.url_event}}</span>
+          </li>
+          <li data-highlight="cta-button">
+            <strong>Przycisk płatności</strong>
+            <span class="var-code">{{2.body.url}}</span>
+          </li>
+          <li data-highlight="email-footer">
+            <strong>Email w stopce</strong>
+            <span class="var-code">mailto:{{30.data.md_email_kontakt}}</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  </div><!-- koniec tab-content 1 -->
+
+  <!-- TAB 2: Problem z płatnością -->
+  <div class="tab-content" data-content="2">
+
+  <!-- LEGENDA -->
+  <div class="legend">
+    <div class="legend-item active" data-toggle="g1-t2" style="color: #6a1b9a;">
+      <div class="legend-checkbox"></div>
+      <span class="legend-text">Gradient 1</span>
+    </div>
+    <div class="legend-item active" data-toggle="g2-t2" style="color: #00bcd4;">
+      <div class="legend-checkbox"></div>
+      <span class="legend-text">Gradient 2</span>
+    </div>
+    <div class="legend-item active" data-toggle="img-t2" style="color: #4caf50;">
+      <div class="legend-checkbox"></div>
+      <span class="legend-text">🖼️ Obrazy (src)</span>
+    </div>
+    <div class="legend-item active" data-toggle="link-t2" style="color: #e91e63;">
+      <div class="legend-checkbox"></div>
+      <span class="legend-text">🔗 Linki (href)</span>
+    </div>
+  </div>
+
+  <div class="main-layout">
+    <!-- EMAIL -->
+    <div class="email-wrap">
+      <div class="email-header">📧 Model maila - Problem z płatnością</div>
+      
+      <div class="email-banner" id="email-banner-t2" title="🖼️ OBRAZEK: {{30.data.event_mail_link_top_banner}}&#10;🔗 LINK: {{30.data.url_event}}">
+        <span class="annotation annotation-img" style="top: -16px; left: 8px; font-size: 8px;" data-type="img-t2">🖼️ src: {{30.data.event_mail_link_top_banner}}</span>
+        <span class="annotation annotation-link" style="bottom: 4px; left: 8px; font-size: 8px;" data-type="link-t2">🔗 href: {{30.data.url_event}}</span>
+        (top banner maila)
+      </div>
+      
+      <div class="email-body">
+        <div class="email-text">
+          Cześć Magdalena
         </div>
-        <div class="email-content">
-          
-          <!-- SEKCJA 1: BANNER -->
-          <div class="email-section" data-section="1">
-            <div class="section-number">1</div>
-            <div class="email-banner">
-              <span>BANNER WYDARZENIA</span>
+        
+        <!-- KOMUNIKAT BŁĘDU -->
+        <div id="error-message-t2" style="background: #ffebee; border-left: 4px solid #d32f2f; padding: 12px; margin-bottom: 16px; font-size: 13px;">
+          <span style="color: #d32f2f; font-weight: bold;">⚠️ Niestety Twoja rejestracja nie powiodła się.</span><br>
+          <span style="color: #666;">Sprawdź formularz i spróbuj ponownie.</span>
+        </div>
+
+        <div style="font-size: 11px; color: #888; margin-bottom: 12px;">
+          📅 5 lutego 2026, 10:00<br>
+          📍 Regent Warsaw Hotel
+        </div>
+
+        <div style="position: relative; display: inline-block; margin-bottom: 16px;">
+          <span class="annotation annotation-g1" style="top: -16px; left: 0;" data-type="g1-t2">tło</span>
+          <span class="annotation annotation-link" style="bottom: -16px; left: 0;" data-type="link-t2">🔗 href</span>
+          <a href="#" class="email-button" id="cta-button-t2" style="background: #6a1b9a; color: white;">Zarejestruj się ponownie</a>
+        </div>
+
+        <div class="order-section">
+          <table class="order-table">
+            <tr>
+              <th colspan="3" id="order-header-t2" style="color: #6a1b9a;">
+                Szczegóły zamówienia
+                <span class="inline-annotation annotation-g1" data-type="g1-t2">kolor</span>
+              </th>
+            </tr>
+            <tr id="ticket-names-t2">
+              <td class="ticket-name" style="color: #6a1b9a;">
+                Bilet Connect
+                <span class="inline-annotation annotation-g1" data-type="g1-t2">kolor</span>
+              </td>
+              <td class="ticket-qty">1 szt. × 567,00 zł</td>
+              <td class="ticket-price">567,00 zł</td>
+            </tr>
+            <tr class="summary-row first" id="summary-first-t2" style="border-top: 2px solid #00bcd4;">
+              <td colspan="2">
+                Kwota netto
+                <span class="inline-annotation annotation-g2" data-type="g2-t2">border</span>
+              </td>
+              <td style="text-align: right;">1 764,00 zł</td>
+            </tr>
+            <tr class="summary-row">
+              <td colspan="2">VAT (23%)</td>
+              <td style="text-align: right;">405,72 zł</td>
+            </tr>
+            <tr class="total-row" id="total-row-t2" style="background: #00bcd4;">
+              <td colspan="2" style="color: white; padding: 8px;">
+                Razem do zapłaty
+                <span class="inline-annotation annotation-g2" data-type="g2-t2" style="background: rgba(255,255,255,0.3);">tło</span>
+              </td>
+              <td style="text-align: right; color: white; padding: 8px;">2 169,72 zł</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="billing-section">
+          <div id="billing-header-t2" style="padding: 8px; font-weight: 600; font-size: 15px; color: #6a1b9a;">
+            Dane rozliczeniowe
+            <span class="inline-annotation annotation-g1" data-type="g1-t2">kolor</span>
+          </div>
+          <div class="billing-content">
+            <div class="billing-col">
+              <strong>Magdalena Kapusta</strong>
+              tescionweb2@digitalunity.pl
+            </div>
+            <div class="billing-col">
+              <strong>DIGITAL UNITY</strong>
+              NIP: 9710668048
             </div>
           </div>
-
-          <!-- SEKCJA 2: TREŚĆ GŁÓWNA -->
-          <div class="email-section" data-section="2">
-            <div class="section-number">2</div>
-            <div class="email-body">
-              <div class="email-greeting">
-                Cześć <strong>Magdalena</strong>
-              </div>
-              <div class="email-text">
-                Dziękujemy za rejestrację na <strong>AMOZ Connect Warszawa</strong>. Aby potwierdzić rezerwację miejsca, wymagane jest dokonanie płatności.
-              </div>
-              <div class="email-info">
-                <div class="email-info-icon">📅</div>
-                <div>5 lutego 2026, 10:00</div>
-              </div>
-              <div class="email-info">
-                <div class="email-info-icon">📍</div>
-                <div>
-                  <strong>Regent Warsaw Hotel</strong><br>
-                  ul. Belwederska 23, 00-761 Warszawa
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- SEKCJA 3: PRZYCISK CTA -->
-          <div class="email-section" data-section="3">
-            <div class="section-number">3</div>
-            <div class="email-body" style="padding-top: 0;">
-              <a href="#" class="email-button">Opłać rezerwację</a>
-            </div>
-          </div>
-
-          <!-- SEKCJA 4: SZCZEGÓŁY ZAMÓWIENIA -->
-          <div class="email-section" data-section="4">
-            <div class="section-number">4</div>
-            <div class="email-body">
-              <table class="order-table">
-                <thead>
-                  <tr>
-                    <th colspan="3">Szczegóły zamówienia</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td class="ticket-name">Bilet Connect</td>
-                    <td style="text-align: center;">1 szt. × 567,00 zł</td>
-                    <td style="text-align: right;">567,00 zł</td>
-                  </tr>
-                  <tr>
-                    <td class="ticket-name">Bilet Connect +</td>
-                    <td style="text-align: center;">3 szt. × 399,00 zł</td>
-                    <td style="text-align: right;">1.197,00 zł</td>
-                  </tr>
-                  <tr class="order-summary-row">
-                    <td colspan="2">Kwota netto</td>
-                    <td style="text-align: right;">1.764,00 zł</td>
-                  </tr>
-                  <tr class="order-summary-row">
-                    <td colspan="2">VAT (23%)</td>
-                    <td style="text-align: right;">405,72 zł</td>
-                  </tr>
-                  <tr class="order-total-row">
-                    <td colspan="2">Razem do zapłaty</td>
-                    <td style="text-align: right;">2.169,72 zł</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- SEKCJA 5: DANE ROZLICZENIOWE -->
-          <div class="email-section" data-section="5">
-            <div class="section-number">5</div>
-            <div class="email-body" style="padding-top: 0;">
-              <table class="billing-table">
-                <thead>
-                  <tr>
-                    <th colspan="2">Dane rozliczeniowe</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <strong>Magdalena Kapusta</strong><br>
-                      tescionweb2@digitalunity.pl<br>
-                      +48888469553
-                    </td>
-                    <td>
-                      <strong>Katarzyna Ochnik DIGITAL UNITY</strong><br>
-                      Bluszczańska 74/58, 00712 Warszawa<br>
-                      NIP: 9710668048
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- SEKCJA 6: STOPKA -->
-          <div class="email-section" data-section="6">
-            <div class="section-number">6</div>
-            <div class="email-footer">
-              Masz pytania? Skontaktuj się z nami:<br>
-              <a href="mailto:eventy@medidesk.com">eventy@medidesk.com</a>
-            </div>
-          </div>
-
         </div>
       </div>
 
-      <!-- PRAWY PANEL - MAPOWANIE -->
-      <div class="mapping-sections">
+      <div id="email-footer-t2" style="background: #6a1b9a; color: white; padding: 12px; text-align: center; font-size: 13px;">
+        <span class="annotation annotation-g1" style="top: 2px; right: 8px;" data-type="g1-t2">tło</span>
+        Masz pytania? 
+        <a href="#" style="color: white;">
+          eventy@medidesk.com
+          <span class="inline-annotation annotation-link" data-type="link-t2">🔗</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- PODSUMOWANIE -->
+    <div class="sidebar">
+      
+      <div class="summary-card" style="background: #fff3e0; border: 2px solid #ff9800;">
+        <h2>⚠️ Różnice vs. Potwierdzenie rejestracji</h2>
+        <ul style="font-size: 11px;">
+          <li><strong>Komunikat błędu</strong> - czerwony alert o nieudanej rejestracji</li>
+          <li><strong>Przycisk</strong> - "Zarejestruj się ponownie" → link do strony wydarzenia</li>
+          <li><strong>Link przycisku</strong> - {{30.data.url_event}} (nie {{2.body.url}})</li>
+        </ul>
+      </div>
+
+      <div class="summary-card">
+        <h2>🎨 Kolory</h2>
         
-        <!-- MAPPING 1: BANNER -->
-        <div class="mapping-card" data-mapping="1">
-          <h3>Sekcja 1</h3>
-          <h2>Banner górny</h2>
-          <div class="variable-list">
-            <div class="variable-item">
-              <div class="variable-label">🖼️ Obrazek bannera:</div>
-              <div class="variable-code">{{30.data.event_mail_link_top_banner}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">🔗 Link do wydarzenia:</div>
-              <div class="variable-code">{{30.data.url_event}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">📝 Alt text obrazka:</div>
-              <div class="variable-code">{{16.event_name}}</div>
-            </div>
-          </div>
-          <div class="code-snippet">
-<span class="keyword">&lt;a</span> <span class="string">href</span>=<span class="variable">"{{30.data.url_event}}"</span><span class="keyword">&gt;</span>
-  <span class="keyword">&lt;img</span> <span class="string">src</span>=<span class="variable">"{{30.data.event_mail_link_top_banner}}"</span>
-       <span class="string">alt</span>=<span class="variable">"{{16.event_name}}"</span> <span class="keyword">/&gt;</span>
-<span class="keyword">&lt;/a&gt;</span>
-          </div>
-        </div>
+        <h3><span class="dot" style="background: #6a1b9a;"></span> Gradient 1</h3>
+        <ul>
+          <li data-highlight="cta-button-t2">Przycisk "Zarejestruj się ponownie" <span class="var-code">background-color: {{30.data.color_gradient_1}}</span></li>
+          <li data-highlight="order-header-t2">Nagłówek "Szczegóły zamówienia" <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
+          <li data-highlight="ticket-names-t2">Nazwy biletów <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
+          <li data-highlight="billing-header-t2">Nagłówek "Dane rozliczeniowe" <span class="var-code">color: {{30.data.color_gradient_1}}</span></li>
+          <li data-highlight="email-footer-t2">Stopka (tło) <span class="var-code">background-color: {{30.data.color_gradient_1}}</span></li>
+        </ul>
 
-        <!-- MAPPING 2: TREŚĆ GŁÓWNA -->
-        <div class="mapping-card" data-mapping="2">
-          <h3>Sekcja 2</h3>
-          <h2>Treść główna</h2>
-          <div class="variable-list">
-            <div class="variable-item">
-              <div class="variable-label">👤 Imię uczestnika:</div>
-              <div class="variable-code">{{9.customFormData[].formEntries.purchaser_first_name}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">📋 Nazwa wydarzenia:</div>
-              <div class="variable-code">{{16.event_name}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">📅 Data wydarzenia:</div>
-              <div class="variable-code">{{30.data.event_day_text_1}}, {{30.data.event_time_text}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">📍 Miejsce (nazwa):</div>
-              <div class="variable-code">{{30.data.event_location_place}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">📍 Adres:</div>
-              <div class="variable-code">{{30.data.event_location_address}}, {{30.data.event_location_zip}} {{30.data.event_location_city}}</div>
-            </div>
-          </div>
-        </div>
+        <h3><span class="dot" style="background: #00bcd4;"></span> Gradient 2</h3>
+        <ul>
+          <li data-highlight="summary-first-t2">Linia nad "Kwota netto" <span class="var-code">border-top: {{30.data.color_gradient_2}}</span></li>
+          <li data-highlight="total-row-t2">Wiersz "Razem do zapłaty" <span class="var-code">background-color: {{30.data.color_gradient_2}}</span></li>
+        </ul>
+      </div>
 
-        <!-- MAPPING 3: PRZYCISK CTA -->
-        <div class="mapping-card" data-mapping="3">
-          <h3>Sekcja 3</h3>
-          <h2>Przycisk płatności (CTA)</h2>
-          <div class="variable-list">
-            <div class="variable-item">
-              <div class="variable-label">🎨 Kolor tła przycisku:</div>
-              <div class="variable-code">{{30.data.color_gradient_1}}</div>
-              <span class="color-indicator" style="background: #6a1b9a; color: white;">Gradient 1</span>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">🔗 Link do płatności:</div>
-              <div class="variable-code">{{2.body.url}}</div>
-            </div>
-          </div>
-          <div class="code-snippet">
-<span class="keyword">&lt;a</span> <span class="string">href</span>=<span class="variable">"{{2.body.url}}"</span>
-   <span class="string">style</span>=<span class="variable">"background-color: {{30.data.color_gradient_1}};"</span><span class="keyword">&gt;</span>
-  Opłać rezerwację
-<span class="keyword">&lt;/a&gt;</span>
-          </div>
-        </div>
+      <div class="summary-card">
+        <h2>🖼️ Obrazy zewnętrzne (src)</h2>
+        <p class="warning">⚠️ Bez wstawienia linku obrazu, element nie pojawi się!</p>
+        <ul>
+          <li data-highlight="email-banner-t2">
+            <strong>Top banner maila</strong>
+            <span class="var-code">{{30.data.event_mail_link_top_banner}}</span>
+          </li>
+        </ul>
+      </div>
 
-        <!-- MAPPING 4: SZCZEGÓŁY ZAMÓWIENIA -->
-        <div class="mapping-card" data-mapping="4">
-          <h3>Sekcja 4</h3>
-          <h2>Szczegóły zamówienia</h2>
-          <div class="variable-list">
-            <div class="variable-item">
-              <div class="variable-label">🎨 Kolor nagłówka "Szczegóły zamówienia":</div>
-              <div class="variable-code">{{30.data.color_gradient_1}}</div>
-              <span class="color-indicator" style="background: #6a1b9a; color: white;">Gradient 1</span>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">🎫 Nazwa biletu (w pętli):</div>
-              <div class="variable-code">{{43.data.ticketName}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">🔢 Ilość:</div>
-              <div class="variable-code">{{42.quantity}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">💰 Cena jednostkowa:</div>
-              <div class="variable-code">{{formatNumber(42.pricePerUnit; 2; ","; )}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">💰 Wartość netto pozycji:</div>
-              <div class="variable-code">{{formatNumber(42.totalNetAmount; 2; ","; )}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">💰 Suma netto:</div>
-              <div class="variable-code">{{formatNumber(16.purchase_net_value; 2; ","; )}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">💰 VAT:</div>
-              <div class="variable-code">{{formatNumber(16.purchase_gross_value - 16.purchase_net_value; 2; ","; )}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">💰 Razem do zapłaty:</div>
-              <div class="variable-code">{{formatNumber(16.purchase_gross_value; 2; ","; )}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">🎨 Kolor tła "Razem do zapłaty":</div>
-              <div class="variable-code">{{30.data.color_gradient_2}}</div>
-              <span class="color-indicator" style="background: #00bcd4; color: white;">Gradient 2</span>
-            </div>
-          </div>
-          <div class="code-snippet">
-<span class="keyword">&lt;tr&gt;</span> <span style="color: #75715e;">/* Pętla biletów - {{45.text}} */</span>
-  <span class="keyword">&lt;td</span> <span class="string">style</span>=<span class="variable">"color: {{30.data.color_gradient_1}};"</span><span class="keyword">&gt;</span>
-    <span class="variable">{{43.data.ticketName}}</span>
-  <span class="keyword">&lt;/td&gt;</span>
-  <span class="keyword">&lt;td&gt;</span><span class="variable">{{42.quantity}}</span> szt. × <span class="variable">{{formatNumber(42.pricePerUnit; 2; ","; )}}</span> zł<span class="keyword">&lt;/td&gt;</span>
-  <span class="keyword">&lt;td&gt;</span><span class="variable">{{formatNumber(42.totalNetAmount; 2; ","; )}}</span> zł<span class="keyword">&lt;/td&gt;</span>
-<span class="keyword">&lt;/tr&gt;</span>
-          </div>
-        </div>
+      <div class="summary-card">
+        <h2>🔗 Linki do aplikacji (href)</h2>
+        <ul>
+          <li data-highlight="email-banner-t2">
+            <strong>Banner</strong> - strona wydarzenia
+            <span class="var-code">{{30.data.url_event}}</span>
+          </li>
+          <li data-highlight="cta-button-t2">
+            <strong>Przycisk "Zarejestruj się ponownie"</strong>
+            <span class="var-code">{{30.data.url_event}}</span>
+          </li>
+          <li data-highlight="email-footer-t2">
+            <strong>Email w stopce</strong>
+            <span class="var-code">mailto:{{30.data.md_email_kontakt}}</span>
+          </li>
+        </ul>
+      </div>
 
-        <!-- MAPPING 5: DANE ROZLICZENIOWE -->
-        <div class="mapping-card" data-mapping="5">
-          <h3>Sekcja 5</h3>
-          <h2>Dane rozliczeniowe</h2>
-          <div class="variable-list">
-            <div class="variable-item">
-              <div class="variable-label">🎨 Kolor nagłówka:</div>
-              <div class="variable-code">{{30.data.color_gradient_1}}</div>
-              <span class="color-indicator" style="background: #6a1b9a; color: white;">Gradient 1</span>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">👤 Imię i nazwisko:</div>
-              <div class="variable-code">{{16.purchaser_full}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">📧 Email:</div>
-              <div class="variable-code">{{16.purchaser_email}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">📱 Telefon:</div>
-              <div class="variable-code">{{9.customFormData[].formEntries.purchaser_mobile_no}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">🏢 Nazwa firmy:</div>
-              <div class="variable-code">{{16.billing_company_name}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">📍 Adres rozliczeniowy:</div>
-              <div class="variable-code">{{33.billing_address_full_new_line}}</div>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">🏛️ NIP:</div>
-              <div class="variable-code">{{16.purchaser_nip}}</div>
-            </div>
-          </div>
-        </div>
+    </div>
+  </div>
 
-        <!-- MAPPING 6: STOPKA -->
-        <div class="mapping-card" data-mapping="6">
-          <h3>Sekcja 6</h3>
-          <h2>Stopka</h2>
-          <div class="variable-list">
-            <div class="variable-item">
-              <div class="variable-label">🎨 Kolor tła stopki:</div>
-              <div class="variable-code">{{30.data.color_gradient_1}}</div>
-              <span class="color-indicator" style="background: #6a1b9a; color: white;">Gradient 1</span>
-            </div>
-            <div class="variable-item">
-              <div class="variable-label">📧 Email kontaktowy:</div>
-              <div class="variable-code">{{30.data.md_email_kontakt}}</div>
-            </div>
-          </div>
-          <div class="code-snippet">
-<span class="keyword">&lt;div</span> <span class="string">style</span>=<span class="variable">"background: {{30.data.color_gradient_1}};"</span><span class="keyword">&gt;</span>
-  Masz pytania? Skontaktuj się z nami:
-  <span class="keyword">&lt;a</span> <span class="string">href</span>=<span class="variable">"mailto:{{30.data.md_email_kontakt}}"</span><span class="keyword">&gt;</span>
-    <span class="variable">{{30.data.md_email_kontakt}}</span>
-  <span class="keyword">&lt;/a&gt;</span>
-<span class="keyword">&lt;/div&gt;</span>
-          </div>
-        </div>
+  </div>
 
+  <!-- TAB 3: Przypomnienie -->
+  <div class="tab-content" data-content="3">
+    <div class="main-layout">
+      <div class="email-wrap">
+        <div class="email-header">📧 Model maila - Przypomnienie</div>
+        <div class="email-banner" style="height: 70px;">
+          (top banner maila)
+        </div>
+        <div class="email-body">
+          <div class="email-text">
+            Cześć Magdalena<br>
+            <strong>Przypominamy o zbliżającym się wydarzeniu!</strong>
+          </div>
+          <div style="background: #fff3e0; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+            📅 <strong>Za 3 dni</strong> - AMOZ Connect Warszawa
+          </div>
+          <p style="font-size: 12px; color: #888;">Lokalizacja, agenda...</p>
+        </div>
+        <div class="email-footer" style="background: #6a1b9a; color: white;">
+          Masz pytania? eventy@medidesk.com
+        </div>
+      </div>
+      <div class="sidebar">
+        <div class="summary-card">
+          <h2>📝 Do opracowania</h2>
+          <p style="font-size: 11px; color: #888;">Ten schemat wymaga jeszcze opracowania mapowania zmiennych.</p>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Interaktywność - podświetlanie sekcji
-    const emailSections = document.querySelectorAll('.email-section');
-    const mappingCards = document.querySelectorAll('.mapping-card');
+    const state = { g1: true, g2: true, link: true, img: true };
 
-    // Hover na sekcji emaila
-    emailSections.forEach(section => {
-      section.addEventListener('mouseenter', () => {
-        const sectionNum = section.dataset.section;
-        highlightSection(sectionNum);
+    const legendItems = document.querySelectorAll('.legend-item');
+    const annotations = document.querySelectorAll('.annotation, .inline-annotation');
+
+    const g1Elements = {
+      button: document.getElementById('cta-button'),
+      orderHeader: document.getElementById('order-header'),
+      billingHeader: document.getElementById('billing-header'),
+      footer: document.getElementById('email-footer'),
+      ticketNames: document.querySelectorAll('[data-g1-text]')
+    };
+
+    const g2Elements = {
+      summaryFirst: document.getElementById('summary-first'),
+      totalRow: document.getElementById('total-row')
+    };
+
+    const bannerElement = document.getElementById('email-banner');
+
+    function updateView() {
+      annotations.forEach(ann => {
+        const type = ann.dataset.type;
+        if (type && state[type] !== undefined) {
+          ann.classList.toggle('hidden', !state[type]);
+        }
       });
 
-      section.addEventListener('mouseleave', () => {
-        clearHighlights();
+      if (g1Elements.button) {
+        g1Elements.button.classList.toggle('show-g1', state.g1);
+        g1Elements.button.classList.toggle('hide-g1', !state.g1);
+      }
+      if (g1Elements.orderHeader) {
+        g1Elements.orderHeader.classList.toggle('show-g1', state.g1);
+        g1Elements.orderHeader.classList.toggle('hide-g1', !state.g1);
+      }
+      if (g1Elements.billingHeader) {
+        g1Elements.billingHeader.classList.toggle('show-g1', state.g1);
+        g1Elements.billingHeader.classList.toggle('hide-g1', !state.g1);
+      }
+      if (g1Elements.footer) {
+        g1Elements.footer.classList.toggle('show-g1', state.g1);
+        g1Elements.footer.classList.toggle('hide-g1', !state.g1);
+      }
+      g1Elements.ticketNames.forEach(el => {
+        el.classList.toggle('show-g1', state.g1);
+        el.classList.toggle('hide-g1', !state.g1);
+      });
+
+      if (g2Elements.summaryFirst) {
+        g2Elements.summaryFirst.classList.toggle('show-g2', state.g2);
+        g2Elements.summaryFirst.classList.toggle('hide-g2', !state.g2);
+      }
+      if (g2Elements.totalRow) {
+        g2Elements.totalRow.classList.toggle('show-g2', state.g2);
+        g2Elements.totalRow.classList.toggle('hide-g2', !state.g2);
+      }
+
+      if (bannerElement) {
+        bannerElement.classList.toggle('hidden', !state.img);
+      }
+    }
+
+    legendItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const toggle = item.dataset.toggle;
+        state[toggle] = !state[toggle];
+        item.classList.toggle('active', state[toggle]);
+        updateView();
       });
     });
 
-    // Hover na karcie mapowania
-    mappingCards.forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        const mappingNum = card.dataset.mapping;
-        highlightSection(mappingNum);
-      });
+    updateView();
 
-      card.addEventListener('mouseleave', () => {
-        clearHighlights();
+    // Obsługa kart/zakładek
+    const tabs = document.querySelectorAll('.tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabNum = tab.dataset.tab;
+        
+        // Usuń active ze wszystkich
+        tabs.forEach(t => t.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+        
+        // Dodaj active do wybranego
+        tab.classList.add('active');
+        document.querySelector(`[data-content="${tabNum}"]`).classList.add('active');
       });
     });
 
-    function highlightSection(num) {
-      clearHighlights();
-      const emailSection = document.querySelector(`.email-section[data-section="${num}"]`);
-      const mappingCard = document.querySelector(`.mapping-card[data-mapping="${num}"]`);
+    // Obsługa legend dla wszystkich zakładek
+    document.querySelectorAll('.legend-item').forEach(item => {
+      item.addEventListener('click', () => {
+        const toggle = item.dataset.toggle;
+        item.classList.toggle('active');
+        
+        const isActive = item.classList.contains('active');
+        
+        // Ukryj/pokaż annotacje
+        document.querySelectorAll(`[data-type="${toggle}"]`).forEach(ann => {
+          ann.classList.toggle('hidden', !isActive);
+        });
+        
+        // Obsługa bannerów
+        if (toggle === 'img-t2') {
+          const banner = document.getElementById('email-banner-t2');
+          if (banner) banner.classList.toggle('hidden', !isActive);
+        }
+        if (toggle === 'img-t3') {
+          const banner = document.getElementById('email-banner-t3');
+          if (banner) banner.classList.toggle('hidden', !isActive);
+        }
+      });
+    });
+
+    // Highlight przy najechaniu na podsumowanie
+    function setupHighlights() {
+      const highlightItems = document.querySelectorAll('[data-highlight]');
       
-      if (emailSection) emailSection.classList.add('active');
-      if (mappingCard) mappingCard.classList.add('active');
-    }
+      highlightItems.forEach(item => {
+        item.style.cursor = 'pointer';
+        
+        item.addEventListener('mouseenter', () => {
+          const targetId = item.dataset.highlight;
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            targetEl.classList.add('blinking');
+          }
+        });
 
-    function clearHighlights() {
-      emailSections.forEach(s => s.classList.remove('active'));
-      mappingCards.forEach(c => c.classList.remove('active'));
+        item.addEventListener('mouseleave', () => {
+          const targetId = item.dataset.highlight;
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            targetEl.classList.remove('blinking');
+          }
+        });
+      });
     }
+    
+    setupHighlights();
   </script>
 </body>
 </html>
